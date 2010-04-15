@@ -64,27 +64,31 @@
 
 - (void) drawRect:(CGRect)rect {
 	
-	if(_hidden) return;
+//	if(_hidden) return;
 	int width, rWidth, rHeight, x;
 	
 	
-	UIFont *titleFont = [UIFont boldSystemFontOfSize:16];
-	UIFont *messageFont = [UIFont systemFontOfSize:12];
+	UIFont *titleFont = [UIFont boldSystemFontOfSize:18];
+	UIFont *messageFont = [UIFont systemFontOfSize:14];
 	
 	CGSize s1 = [self calculateHeightOfTextFromWidth:_title font:titleFont width:200 linebreak:UILineBreakModeTailTruncation];
-	CGSize s2 = [self calculateHeightOfTextFromWidth:_message font:messageFont width:200 linebreak:UILineBreakModeCharacterWrap];
+	CGSize s2 = [self calculateHeightOfTextFromWidth:_message font:messageFont width:200 linebreak:UILineBreakModeWordWrap];
 	
 	if([_title length] < 1) s1.height = 0;
 	if([_message length] < 1) s2.height = 0;
 	
 	
-	rHeight = (s1.height + s2.height + (HEIGHT_MARGIN*2) + 10 + _activity.frame.size.height);
+	if (_hidden) {
+		rHeight = (5 + s1.height + s2.height + (HEIGHT_MARGIN*2));
+	} else {
+		rHeight = (10 + s1.height + s2.height + (HEIGHT_MARGIN*2) + 10 + _activity.frame.size.height);
+	}
+
 	rWidth = width = (s2.width > s1.width) ? (int) s2.width : (int) s1.width;
 	rWidth += WIDTH_MARGIN * 2;
 	x = (280 - rWidth) / 2;
 	
 	_activity.center = CGPointMake(280/2,HEIGHT_MARGIN + _activity.frame.size.height/2);
-	
 	
 	//NSLog(@"DRAW RECT %d %f",rHeight,self.frame.size.height);
 	
@@ -98,17 +102,17 @@
 	
 	// DRAW FIRST TEXT
 	[[UIColor whiteColor] set];
-	r = CGRectMake(x+WIDTH_MARGIN, _activity.frame.size.height + 10 + HEIGHT_MARGIN, width, s1.height);
+	if (_hidden) {
+		r = CGRectMake(x+WIDTH_MARGIN, HEIGHT_MARGIN, width, s1.height);
+	} else {
+		r = CGRectMake(x+WIDTH_MARGIN, 5 + _activity.frame.size.height + HEIGHT_MARGIN, width, s1.height);
+	}
 	CGSize s = [_title drawInRect:r withFont:titleFont lineBreakMode:UILineBreakModeTailTruncation alignment:UITextAlignmentCenter];
 	
-	
 	// DRAW SECOND TEXT
-	r.origin.y += s.height;
+	r.origin.y += s.height + 5;
 	r.size.height = s2.height;
-	[_message drawInRect:r withFont:messageFont lineBreakMode:UILineBreakModeCharacterWrap alignment:UITextAlignmentCenter];
-	
-	
-	
+	[_message drawInRect:r withFont:messageFont lineBreakMode:UILineBreakModeWordWrap alignment:UITextAlignmentCenter];
 }
 
 

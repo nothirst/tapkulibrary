@@ -103,6 +103,7 @@
 - (void) setCurrentMonth:(NSDate*)d;
 - (void) setSelectedMonth:(NSDate*)d;
 - (void) showCalendarMonth:(NSDate*)theD;
+- (void)selectDayInMonth;
 @end
 
 
@@ -356,6 +357,10 @@
 }
 - (void) animationStopped:(id)sender{
 	
+	if ([delegate respondsToSelector:@selector(calendarMonthView:monthDidAppear:)]){
+		[delegate calendarMonthView:self monthDidAppear:currentMonth];
+	}
+	
 	[scrollView bringSubviewToFront:[deck objectAtIndex:1]];
 	[[deck objectAtIndex:0] setAlpha:1];
 	[[deck objectAtIndex:2] setAlpha:1];
@@ -380,6 +385,7 @@
 	
 	
 	[self setMonthYear: [NSString stringWithFormat:@"%@ %@",[theD month],[theD year]]];
+	NSLog(@"%@", [NSString stringWithFormat:@"%@ %@",[theD month],[theD year]]);
 	[self setSelectedMonth:theD];
 	
 	NSArray *ar = [self getMarksDataWithDate:selectedMonth];
@@ -422,7 +428,7 @@
 
 @synthesize delegate,dataSource;
 @synthesize monthYear;
-
+@synthesize selectedDate;
 
 // public
 - (id) init{
@@ -474,6 +480,7 @@
 // public
 - (void) selectDate:(NSDate *)date{
 	
+	[self setSelectedDate:date];
 	if (deck && deck.count > 1) {
 		// Get the new month view
 		TKMonthGridView* current = [deck objectAtIndex:1];
@@ -534,8 +541,9 @@
 	TKDateInformation info = [date dateInformation];
 	info.day = dayNumber.intValue;
 	
+	[self setSelectedDate:[NSDate dateFromDateInformation:info]];
 	if([delegate respondsToSelector:@selector(calendarMonthView:dateWasSelected:)])
-		[delegate calendarMonthView:self dateWasSelected:[NSDate dateFromDateInformation:info]];
+		[delegate calendarMonthView:self dateWasSelected:[self selectedDate]];
 }
 
 
@@ -545,15 +553,31 @@
 #pragma mark LEFT & RIGHT BUTTON ACTIONS
 - (void) leftButtonTapped{
 	[self moveCalendarMonthsDownAnimated:TRUE];
-	[[deck objectAtIndex:1] selectDay:1];
+//	[[deck objectAtIndex:1] selectDay:1];
+	[self selectDayInMonth];
 }
 - (void) rightButtonTapped{
 	[self moveCalendarMonthsUpAnimated:TRUE];
-	[[deck objectAtIndex:1] selectDay:1];
-	
-	
+//	[[deck objectAtIndex:1] selectDay:1];
+	[self selectDayInMonth];
 }
 
+- (void)selectDayInMonth {
+	TKDateInformation info1 = [[self selectedDate] dateInformation];
+	info1.hour = info1.minute = info1.second = 0;
+	
+	TKDateInformation info2 = [selectedMonth dateInformation];
+	info2.hour = info2.minute = info2.second = 0;
+	
+	NSInteger difference = [[NSDate dateFromDateInformation:info1] differenceInMonthsTo:[NSDate dateFromDateInformation:info2]];
+	if (difference == 0) {
+//		NSCalendar *gregorian = [[NSCalendar alloc] initWithCalendarIdentifier:NSGregorianCalendar];
+//		NSDateComponents *comp = [gregorian components:(NSDayCalendarUnit) fromDate:selectedMonth];
+		[[deck objectAtIndex:1] selectDay:info1.day];
+//		[[deck objectAtIndex:1] selectDay:[comp day]];
+//		[gregorian release], gregorian = nil;
+	}		
+}
 
 - (void) drawRect:(CGRect)rect {
     // Drawing code
@@ -571,8 +595,9 @@
 }
 - (void) drawMonthLabel:(CGRect)rect{
 	
+	
 	if(monthYear != nil){
-		CGRect r = CGRectInset(self.frame, 55, 8);
+		CGRect r = CGRectMake(0, 8, 320, 44);
 		r.size.height=42;
 		[[UIColor colorWithRed:75.0/255.0 green:92/255.0 blue:111/255.0 alpha:1] set];
 		[monthYear drawInRect:r 
@@ -620,6 +645,7 @@
 - (void)dealloc {
 	[selectedMonth release];
 	[currentMonth release];
+	[selectedDate release], selectedDate = nil;
 	[deck release];
 	
 	[shadow release];
@@ -905,7 +931,7 @@
 	
 	
 	[self bringSubviewToFront:selectedDay];
-	[delegate performSelector:@selector(dateWasSelected:) withObject:[NSArray arrayWithObjects:self,selectedDay.str,nil]];
+//	[delegate performSelector:@selector(dateWasSelected:) withObject:[NSArray arrayWithObjects:self,selectedDay.str,nil]];
 	//[delegate calendarMonth:self dateWasSelected:[selectedDay.str intValue]];
 }
 - (void) selectDayView:(UITouch*)touch{
@@ -920,18 +946,18 @@
 	
 	TKCalendarDayView *selected = [dayTiles objectAtIndex:index];
 	
-	if(selected == selectedDay) return;
+//	if(selected == selectedDay) return;
 	
-	if(![selected active]){
-		if([selected.str intValue] > 15){
-			[delegate performSelector:@selector(previousMonthDayWasSelected:) withObject:selected.str];
-			//[delegate calendarMonth:self previousMonthDayWasSelected:[selected.str intValue]];
-		}else{
-			[delegate performSelector:@selector(nextMonthDayWasSelected:) withObject:selected.str];
-			//[delegate calendarMonth:self nextMonthDayWasSelected:[selected.str intValue]];
-		}
-		return;
-	}
+//	if(![selected active]){
+//		if([selected.str intValue] > 15){
+//			[delegate performSelector:@selector(previousMonthDayWasSelected:) withObject:selected.str];
+//			//[delegate calendarMonth:self previousMonthDayWasSelected:[selected.str intValue]];
+//		}else{
+//			[delegate performSelector:@selector(nextMonthDayWasSelected:) withObject:selected.str];
+//			//[delegate calendarMonth:self nextMonthDayWasSelected:[selected.str intValue]];
+//		}
+//		return;
+//	}
 	[selectedDay setSelected:NO];
 	[self bringSubviewToFront:selected];
 	[selected setSelected:YES];

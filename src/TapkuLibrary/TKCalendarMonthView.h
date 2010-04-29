@@ -42,6 +42,8 @@
 	
 	NSDate *currentMonth;
 	NSDate *selectedMonth;
+	NSDate *selectedDate;
+	
 	NSMutableArray *deck;
 	
 	
@@ -56,6 +58,7 @@
 }
 @property (readonly,nonatomic) NSString *monthYear;
 @property (readonly,nonatomic) NSDate *monthDate;
+@property (nonatomic, retain) NSDate *selectedDate;
 @property (assign,nonatomic) id <TKCalendarMonthViewDataSource> dataSource;
 @property (assign,nonatomic) id <TKCalendarMonthViewDelegate> delegate;
 
@@ -77,5 +80,6 @@
 @optional
 - (void) calendarMonthView:(TKCalendarMonthView*)monthView dateWasSelected:(NSDate*)date;
 - (void) calendarMonthView:(TKCalendarMonthView*)monthView monthWillAppear:(NSDate*)month;
+- (void) calendarMonthView:(TKCalendarMonthView*)monthView monthDidAppear:(NSDate*)month;
 @end
 

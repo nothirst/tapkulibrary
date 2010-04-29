@@ -592,6 +592,7 @@
 				);
 				PREBINDING = NO;
 				SDKROOT = "";
+				SYMROOT = /tmp/TapkuLibrary/build;
 				VALID_ARCHS = i386;
 			};
 			name = Debug;
@@ -610,6 +611,7 @@
 				);
 				PREBINDING = NO;
 				SDKROOT = "";
+				SYMROOT = /tmp/TapkuLibrary/build;
 				VALID_ARCHS = i386;
 			};
 			name = Release;

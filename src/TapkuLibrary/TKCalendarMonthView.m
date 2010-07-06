@@ -493,11 +493,31 @@
 {
 	[self moveCalendarMonthsDownAnimated:TRUE];
 	[[deck objectAtIndex:1] selectDay:day.intValue];
+
+	TKMonthGridView *calendarMonth = [deck objectAtIndex:1];
+	NSDate *date = calendarMonth.dateOfFirst;
+	TKDateInformation info = [date dateInformation];
+	info.day = day.intValue;
+
+	[self setSelectedDate:[NSDate dateFromDateInformation:info]];
+	if ([delegate respondsToSelector:@selector(calendarMonthView:dateWasSelected:)]) {
+		[delegate calendarMonthView:self dateWasSelected:[self selectedDate]];
+	}
 }
 - (void)nextMonthDayWasSelected:(NSString *)day
 {
 	[self moveCalendarMonthsUpAnimated:TRUE];
 	[[deck objectAtIndex:1] selectDay:day.intValue];
+
+	TKMonthGridView *calendarMonth = [deck objectAtIndex:1];
+	NSDate *date = calendarMonth.dateOfFirst;
+	TKDateInformation info = [date dateInformation];
+	info.day = day.intValue;
+
+	[self setSelectedDate:[NSDate dateFromDateInformation:info]];
+	if ([delegate respondsToSelector:@selector(calendarMonthView:dateWasSelected:)]) {
+		[delegate calendarMonthView:self dateWasSelected:[self selectedDate]];
+	}
 }
 - (void)dateWasSelected:(NSArray *)array
 {
@@ -881,16 +901,17 @@
 
 //	if(selected == selectedDay) return;
 
-//	if(![selected active]){
-//		if([selected.str intValue] > 15){
-//			[delegate performSelector:@selector(previousMonthDayWasSelected:) withObject:selected.str];
-//			//[delegate calendarMonth:self previousMonthDayWasSelected:[selected.str intValue]];
-//		}else{
-//			[delegate performSelector:@selector(nextMonthDayWasSelected:) withObject:selected.str];
-//			//[delegate calendarMonth:self nextMonthDayWasSelected:[selected.str intValue]];
-//		}
-//		return;
-//	}
+	if (![selected active]) {
+		if ([selected.str intValue] > 15) {
+			[delegate performSelector:@selector(previousMonthDayWasSelected:) withObject:selected.str];
+			// [delegate calendarMonth:self previousMonthDayWasSelected:[selected.str intValue]];
+		} else {
+			[delegate performSelector:@selector(nextMonthDayWasSelected:) withObject:selected.str];
+			// [delegate calendarMonth:self nextMonthDayWasSelected:[selected.str intValue]];
+		}
+		return;
+	}
+
 	[selectedDay setSelected:NO];
 	[self bringSubviewToFront:selected];
 	[selected setSelected:YES];

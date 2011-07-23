@@ -456,7 +456,7 @@
 		info1.hour = info1.minute = info1.second = 0;
 
 		TKDateInformation info2 = [current.dateOfFirst dateInformation];
-		info1.hour = info1.minute = info1.second = 0;
+		info2.hour = info2.minute = info2.second = 0;
 
 		NSInteger difference = [[NSDate dateFromDateInformation:info1] differenceInMonthsTo:[NSDate dateFromDateInformation:info2]];
 		if (difference == 0) {

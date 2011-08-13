@@ -552,6 +552,7 @@
 			buildSettings = {
 				ALWAYS_SEARCH_USER_PATHS = NO;
 				ARCHS = (
+					armv7,
 					armv6,
 					"$(ARCHS_STANDARD_32_BIT)",
 				);
@@ -574,6 +575,7 @@
 			buildSettings = {
 				ALWAYS_SEARCH_USER_PATHS = NO;
 				ARCHS = (
+					armv7,
 					armv6,
 					"$(ARCHS_STANDARD_32_BIT)",
 				);

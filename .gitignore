@@ -5,6 +5,9 @@ TapkuLibraryDemo/build/**
 *.pbxuser
 *.perspectivev3
 *.mode1v3
+src/*.xcodeproj/project.xcworkspace/xcuserdata/*
+src/*.xcodeproj/project.xcworkspace/contents.xcworkspacedata
+src/*.xcodeproj/xcuserdata/*
 
 # old skool
 .svn

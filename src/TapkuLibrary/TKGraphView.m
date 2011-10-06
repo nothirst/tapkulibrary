@@ -589,9 +589,6 @@ static float highValue;
 
 - (void)calculateHighLow
 {
-	highValue;
-	lowValue;
-
 	if (data == nil || [data count] < 1) {
 		return;
 	}

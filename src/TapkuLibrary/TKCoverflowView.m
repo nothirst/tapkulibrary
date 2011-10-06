@@ -265,7 +265,7 @@
 	}
 	
 	if(animated) [UIView commitAnimations];
-	else [delegate coverflowView:self coverAtIndexWasBroughtToFront:currentIndex];
+	else [coverFlowDelegate coverflowView:self coverAtIndexWasBroughtToFront:currentIndex];
 
 		
 
@@ -274,13 +274,13 @@
 
 - (void) animationDidStop:(NSString *)animationID finished:(NSNumber *)finished context:(void *)context{
 	if([finished boolValue] && [animationID intValue] == currentIndex)
-		[delegate coverflowView:self coverAtIndexWasBroughtToFront:currentIndex];
+		[coverFlowDelegate coverflowView:self coverAtIndexWasBroughtToFront:currentIndex];
 }
 
 @end
 
 @implementation TKCoverflowView
-@synthesize delegate,dataSource,coverSize,numberOfCovers,coverSpacing,angle;
+@synthesize coverFlowDelegate,dataSource,coverSize,numberOfCovers,coverSpacing,angle;
 
 
 - (id) initWithFrame:(CGRect)frame {
@@ -397,8 +397,8 @@
 	if(touch.view == currentTouch){
 		if(touch.tapCount > 1 && currentIndex == [coverViews indexOfObject:currentTouch]){
 
-			if([delegate respondsToSelector:@selector(coverflowView:coverAtIndexWasDoubleTapped:)])
-				[delegate coverflowView:self coverAtIndexWasDoubleTapped:currentIndex];
+			if([coverFlowDelegate respondsToSelector:@selector(coverflowView:coverAtIndexWasDoubleTapped:)])
+				[coverFlowDelegate coverflowView:self coverAtIndexWasDoubleTapped:currentIndex];
 			
 		}else{
 			int index = [coverViews indexOfObject:currentTouch];
@@ -459,7 +459,7 @@
 	[coverViews release];
 	[views release];
 	currentTouch = nil;
-	delegate = nil;
+	coverFlowDelegate = nil;
 	dataSource = nil;
 	
     [super dealloc];

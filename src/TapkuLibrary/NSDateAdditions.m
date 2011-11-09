@@ -77,12 +77,12 @@
 
 // ------------------
 
-- (NSString*) month{
+- (NSString*) tk_month{
 	NSDateFormatter *dateFormatter = [[[NSDateFormatter alloc] init] autorelease];	
 	[dateFormatter setDateFormat:@"MMMM"];
 	return [dateFormatter stringFromDate:self];
 }
-- (NSString*) year{
+- (NSString*) tk_year{
 	NSDateFormatter *dateFormatter = [[[NSDateFormatter alloc] init] autorelease];	
 	[dateFormatter setDateFormat:@"yyyy"];
 	return [dateFormatter stringFromDate:self];

@@ -210,7 +210,7 @@
 	NSDate *newDate = [gregorian dateFromComponents:comp];
 	[gregorian release];
 
-	[self setMonthYear:[NSString stringWithFormat:@"%@ %@", [newDate month], [newDate year]]];
+	[self setMonthYear:[NSString stringWithFormat:@"%@ %@", [newDate tk_month], [newDate tk_year]]];
 	[self setSelectedMonth:newDate];
 
 	NSArray *ar = [self getMarksDataWithDate:selectedMonth];
@@ -363,8 +363,8 @@
 
 	// TKDateInformation info = [theD dateInformation];
 
-	[self setMonthYear:[NSString stringWithFormat:@"%@ %@", [theD month], [theD year]]];
-	NSLog(@"%@", [NSString stringWithFormat:@"%@ %@", [theD month], [theD year]]);
+	[self setMonthYear:[NSString stringWithFormat:@"%@ %@", [theD tk_month], [theD tk_year]]];
+	NSLog(@"%@", [NSString stringWithFormat:@"%@ %@", [theD tk_month], [theD tk_year]]);
 	[self setSelectedMonth:theD];
 
 	NSArray *ar = [self getMarksDataWithDate:selectedMonth];
@@ -413,7 +413,7 @@
 		info.day = 1;
 		[self setCurrentMonth:[NSDate dateFromDateInformation:info]];
 
-		monthYear = [[NSString stringWithFormat:@"%@ %@", [currentMonth month], [currentMonth year]] copy];
+		monthYear = [[NSString stringWithFormat:@"%@ %@", [currentMonth tk_month], [currentMonth tk_year]] copy];
 		[self setSelectedMonth:currentMonth];
 
 		[self loadButtons];

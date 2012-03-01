@@ -131,7 +131,7 @@
 
 - (void)setProgress:(NSNumber *)progressNumber outOfTotal:(NSNumber *)totalNumber
 {
-    if ([progressNumber compare:totalNumber] == NSOrderedSame) {
+    if (progressNumber == nil || totalNumber == nil) {
         if (self.progressView.superview != nil) {
             [self addSubview:_activity];
             [self.progressView removeFromSuperview];

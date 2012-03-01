@@ -35,12 +35,18 @@
 #define WIDTH_MARGIN  20
 #define HEIGHT_MARGIN 20
 
-@interface LoadingHUDView (PrivateMethods)
+@interface LoadingHUDView ()
+
+@property (nonatomic, retain) UIProgressView *progressView;
+
 - (CGSize)calculateHeightOfTextFromWidth:(NSString *)text font:(UIFont *)withFont width:(float)width linebreak:(UILineBreakMode)lineBreakMode;
+
 @end
 
 @implementation LoadingHUDView
+
 @synthesize radius;
+@synthesize progressView = _progressView;
 
 - (id)initWithTitle:(NSString *)ttl message:(NSString *)msg
 {
@@ -81,10 +87,15 @@
 		s2.height = 0;
 	}
 
+    CGFloat progressHeight = _activity.frame.size.height;
+    if ([_activity superview] == nil) {
+        progressHeight = self.progressView.frame.size.height;
+    }
+    
 	if (_hidden) {
 		rHeight = (5 + s1.height + s2.height + (HEIGHT_MARGIN * 2));
 	} else {
-		rHeight = (10 + s1.height + s2.height + (HEIGHT_MARGIN * 2) + 10 + _activity.frame.size.height);
+		rHeight = (10 + s1.height + s2.height + (HEIGHT_MARGIN * 2) + 10 + progressHeight);
 	}
 
 	rWidth = width = (s2.width > s1.width) ? (int)s2.width : (int)s1.width;
@@ -92,6 +103,7 @@
 	x = (280 - rWidth) / 2;
 
 	_activity.center = CGPointMake(280 / 2, HEIGHT_MARGIN + _activity.frame.size.height / 2);
+	self.progressView.center = CGPointMake(280 / 2, HEIGHT_MARGIN + self.progressView.frame.size.height / 2);
 
 	// NSLog(@"DRAW RECT %d %f",rHeight,self.frame.size.height);
 
@@ -107,7 +119,7 @@
 	if (_hidden) {
 		r = CGRectMake(x + WIDTH_MARGIN, HEIGHT_MARGIN, width, s1.height);
 	} else {
-		r = CGRectMake(x + WIDTH_MARGIN, 5 + _activity.frame.size.height + HEIGHT_MARGIN, width, s1.height);
+		r = CGRectMake(x + WIDTH_MARGIN, 5 + progressHeight + HEIGHT_MARGIN, width, s1.height);
 	}
 	CGSize s = [_title drawInRect:r withFont:titleFont lineBreakMode:UILineBreakModeTailTruncation alignment:UITextAlignmentCenter];
 
@@ -115,6 +127,23 @@
 	r.origin.y += s.height + 5;
 	r.size.height = s2.height;
 	[_message drawInRect:r withFont:messageFont lineBreakMode:UILineBreakModeWordWrap alignment:UITextAlignmentCenter];
+}
+
+- (void)setProgress:(NSNumber *)progressNumber outOfTotal:(NSNumber *)totalNumber
+{
+    if ([progressNumber compare:totalNumber] == NSOrderedSame) {
+        if (self.progressView.superview != nil) {
+            [self addSubview:_activity];
+            [self.progressView removeFromSuperview];
+        }
+    } else {
+        if ([_activity superview] != nil) {
+            [_activity removeFromSuperview];
+            [self addSubview:self.progressView];
+        }
+
+        [self.progressView setProgress:([progressNumber floatValue] / [totalNumber floatValue]) animated:YES];
+    }
 }
 
 - (void)setTitle:(NSString *)str
@@ -195,7 +224,17 @@
 	[_activity release];
 	[_title release];
 	[_message release];
+    [_progressView release], _progressView = nil;
 	[super dealloc];
+}
+
+- (UIProgressView *)progressView
+{
+    if (_progressView == nil) {
+        _progressView = [[UIProgressView alloc] initWithProgressViewStyle:UIProgressViewStyleBar];
+    }
+    
+    return _progressView;
 }
 
 @end

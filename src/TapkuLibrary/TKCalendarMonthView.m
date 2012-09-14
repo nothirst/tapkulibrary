@@ -364,7 +364,6 @@
 	// TKDateInformation info = [theD dateInformation];
 
 	[self setMonthYear:[NSString stringWithFormat:@"%@ %@", [theD tk_month], [theD tk_year]]];
-	NSLog(@"%@", [NSString stringWithFormat:@"%@ %@", [theD tk_month], [theD tk_year]]);
 	[self setSelectedMonth:theD];
 
 	NSArray *ar = [self getMarksDataWithDate:selectedMonth];
@@ -479,7 +478,6 @@
 		current = [deck objectAtIndex:1];
 		// Select Date
 		[current selectDay:info1.day];
-		NSLog(@"%@", date);
 	}
 }
 - (NSDate *)monthDate

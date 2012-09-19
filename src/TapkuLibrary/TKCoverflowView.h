@@ -71,11 +71,11 @@ static const CGFloat TKCoverflowViewCoverAngleLess = 1.1;
 	float angle;
 
 	
-	id <TKCoverflowViewDelegate> coverFlowDelegate;
-	id <TKCoverflowViewDataSource> dataSource;
+	id <TKCoverflowViewDelegate> __unsafe_unretained coverFlowDelegate;
+	id <TKCoverflowViewDataSource> __unsafe_unretained dataSource;
 }
-@property (nonatomic, assign) id <TKCoverflowViewDelegate> coverFlowDelegate;
-@property (nonatomic, assign) id <TKCoverflowViewDataSource> dataSource;
+@property (nonatomic, unsafe_unretained) id <TKCoverflowViewDelegate> coverFlowDelegate;
+@property (nonatomic, unsafe_unretained) id <TKCoverflowViewDataSource> dataSource;
 @property (nonatomic, assign) CGSize coverSize; // default 124 x 124
 @property (nonatomic, assign) int numberOfCovers;
 @property (nonatomic, assign) float coverSpacing;

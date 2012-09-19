@@ -67,7 +67,7 @@
     
     UITableViewCell *cell = [tableview dequeueReusableCellWithIdentifier:CellIdentifier];
     if (cell == nil) {
-        cell = [[[UITableViewCell alloc] initWithStyle:UITableViewCellStyleDefault reuseIdentifier:CellIdentifier] autorelease];
+        cell = [[UITableViewCell alloc] initWithStyle:UITableViewCellStyleDefault reuseIdentifier:CellIdentifier];
     }
     
     // Set up the cell...
@@ -97,11 +97,6 @@
 - (void)viewDidUnload {
 	// Release any retained subviews of the main view.
 	// e.g. self.myOutlet = nil;
-}
-- (void)dealloc {
-	[header release];
-	[tableView release];
-    [super dealloc];
 }
 
 

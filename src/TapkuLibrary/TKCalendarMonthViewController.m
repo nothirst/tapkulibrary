@@ -66,9 +66,5 @@
 	// Release any retained subviews of the main view.
 	// e.g. self.myOutlet = nil;
 }
-- (void)dealloc {
-	[monthView release];
-    [super dealloc];
-}
 
 @end

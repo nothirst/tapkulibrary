@@ -149,7 +149,7 @@
 	// Make it today
 	if (!self.currentDay) {
 		// Dont' want to inform the observer
-		_currentDay = [[NSDate date]retain];
+		_currentDay = [NSDate date];
 	}
 	
 	// Remove all previous view event
@@ -255,12 +255,7 @@
 	// Remove observers
 	[self removeObserver:self forKeyPath: @"currentDay"];
 	
-	[_currentDay release];
-	[_events release];
-	[_timelineView release];
-	[_scrollView release];
 	
-    [super dealloc];
 }
 
 
@@ -468,12 +463,6 @@
 #pragma mark -
 #pragma mark Dealloc
 
-- (void)dealloc {
-	[_times release];
-	[_periods release];
-	
-    [super dealloc];
-}
 
 
 @end

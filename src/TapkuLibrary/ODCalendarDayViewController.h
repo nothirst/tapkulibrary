@@ -37,6 +37,6 @@
 	ODCalendarDayTimelineView *_calendarDayTimelineView;
 }
 
-@property (nonatomic, readonly) ODCalendarDayTimelineView *calendarDayTimelineView;
+@property (unsafe_unretained, nonatomic, readonly) ODCalendarDayTimelineView *calendarDayTimelineView;
 
 @end

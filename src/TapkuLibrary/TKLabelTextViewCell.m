@@ -90,10 +90,6 @@
 	[self setNeedsDisplay];
 }
 
-- (void) dealloc {
-	[textView release];
-	[super dealloc];
-}
 
 
 @end

@@ -72,10 +72,6 @@
 }
 
 
-- (void)dealloc {
-	[label dealloc];
-    [super dealloc];
-}
 
 
 @end

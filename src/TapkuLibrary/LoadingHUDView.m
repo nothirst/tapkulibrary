@@ -37,7 +37,7 @@
 
 @interface LoadingHUDView ()
 
-@property (nonatomic, retain) UIProgressView *progressView;
+@property (nonatomic, strong) UIProgressView *progressView;
 
 - (CGSize)calculateHeightOfTextFromWidth:(NSString *)text font:(UIFont *)withFont width:(float)width linebreak:(UILineBreakMode)lineBreakMode;
 
@@ -148,7 +148,6 @@
 
 - (void)setTitle:(NSString *)str
 {
-    [_title release];
     _title = [str copy];
     // [self updateHeight];
     [self setNeedsDisplay];
@@ -160,7 +159,6 @@
 
 - (void)setMessage:(NSString *)str
 {
-    [_message release];
     _message = [str copy];
     [self setNeedsDisplay];
 }
@@ -221,11 +219,7 @@
 
 - (void)dealloc
 {
-    [_activity release];
-    [_title release];
-    [_message release];
-    [_progressView release], _progressView = nil;
-    [super dealloc];
+    _progressView = nil;
 }
 
 - (UIProgressView *)progressView

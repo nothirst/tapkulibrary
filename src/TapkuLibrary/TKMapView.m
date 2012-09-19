@@ -73,9 +73,6 @@
 	point = [touch locationInView:self];
 	[target performSelector:action];
 }
-- (void)dealloc {
-    [super dealloc];
-}
 
 @end
 
@@ -148,11 +145,6 @@
 }
 
 
-- (void)dealloc {
-	[overlay release];
-	[mapView release];
-    [super dealloc];
-}
 
 @end
 

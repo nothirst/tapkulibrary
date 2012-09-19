@@ -88,7 +88,7 @@
 
 + (id)eventViewWithFrame:(CGRect)frame id:(NSNumber *)id startDate:(NSDate *)startDate endDate:(NSDate *)endDate title:(NSString *)title location:(NSString *)location;
 {
-	ODCalendarDayEventView *event = [[[ODCalendarDayEventView alloc]initWithFrame:frame]autorelease];
+	ODCalendarDayEventView *event = [[ODCalendarDayEventView alloc]initWithFrame:frame];
 	event.id = id;
 	event.startDate = startDate;
 	event.endDate = endDate;
@@ -151,15 +151,6 @@
 	CGContextRestoreGState(context);
 }
 
-- (void)dealloc {
-	[_id release];
-	[_startDate release];
-	[_endDate release];
-	[_title release];
-	[_location release];
-	
-    [super dealloc];
-}
 
 
 

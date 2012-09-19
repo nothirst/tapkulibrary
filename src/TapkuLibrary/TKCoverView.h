@@ -39,6 +39,6 @@
 	UIImageView *gradient;
 	UIImageView *reflected;
 }
-@property (retain,nonatomic) UIImage *image;
+@property (strong,nonatomic) UIImage *image;
 @property (assign,nonatomic) float baseline;
 @end

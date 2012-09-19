@@ -52,15 +52,10 @@
 		contentView = [[ABTableViewCellView alloc] initWithFrame:CGRectZero];
 		contentView.opaque = YES;
 		[self addSubview:contentView];
-		[contentView release];
     }
     return self;
 }
 
-- (void)dealloc
-{
-	[super dealloc];
-}
 
 - (void) layoutSubviews {
 	[super layoutSubviews];

@@ -38,7 +38,7 @@
 @interface TKCalendarMonthViewController : UIViewController <TKCalendarMonthViewDelegate,TKCalendarMonthViewDataSource> {
 	TKCalendarMonthView *monthView;
 }
-@property (retain,nonatomic) TKCalendarMonthView *monthView;
+@property (strong,nonatomic) TKCalendarMonthView *monthView;
 
 @end
 

@@ -101,10 +101,6 @@
 }
 
 
-- (void)dealloc {
-	[field release];
-	[super dealloc];
-}
 
 
 @end

@@ -56,12 +56,12 @@
 	TKGraphViewPlotView *plotView;
 }
 
-@property (nonatomic,retain) UILabel *title;
+@property (nonatomic,strong) UILabel *title;
 @property (nonatomic,assign) int pointDistance;
 @property (nonatomic,assign,getter=isTouchIndicatorEnabled) BOOL touchIndicatorEnabled;
 @property (nonatomic,copy) NSString *goalTitle;
 @property (nonatomic,assign,getter=isGoalShown) BOOL goalShown;
-@property (nonatomic,retain) NSNumber *goalValue;
+@property (nonatomic,strong) NSNumber *goalValue;
 
 
 - (void) setGraphWithDataPoints:(NSArray*)dataPoints; // OBJECTS NEED TO IMPLEMENT TKGRAPHVIEWPOINT PROTOCOL

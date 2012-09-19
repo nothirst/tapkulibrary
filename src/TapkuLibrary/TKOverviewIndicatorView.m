@@ -67,12 +67,8 @@ static UIImage *middle = nil;
 									font:(UIFont*)withFont 
 								   width:(float)width 
 							   linebreak:(UILineBreakMode)lineBreakMode{
-	[text retain];
-	[withFont retain];
 	CGSize suggestedSize = [text sizeWithFont:withFont constrainedToSize:CGSizeMake(width, FLT_MAX) lineBreakMode:lineBreakMode];
 	
-	[text release];
-	[withFont release];
 	
 	return suggestedSize.width;
 }
@@ -91,9 +87,6 @@ static UIImage *middle = nil;
 - (void) setColor:(TKOverviewIndicatorViewColor)colour{
 	if(color == colour && middle != nil) return;
 	color = colour;
-	[left release];
-	[right release];
-	[middle release];
 	
 	
 	NSString *bundle = TKBUNDLE(@"TapkuLibrary.bundle/Images/overview/");
@@ -113,9 +106,6 @@ static UIImage *middle = nil;
 		right =[UIImage imageFromPath:[bundle stringByAppendingPathComponent:@"ind_red_right.png"]];
 	}
 	
-	[left retain];
-	[right retain];
-	[middle retain];
 	[self setNeedsDisplay];
 }
 
@@ -153,10 +143,6 @@ static UIImage *middle = nil;
 }
 
 
-- (void)dealloc {
-	[textLabel release];
-    [super dealloc];
-}
 
 
 @end

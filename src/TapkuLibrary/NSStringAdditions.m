@@ -39,9 +39,7 @@
 				linebreak:(UILineBreakMode)lineBreakMode{
 
 
-	[withFont retain];
 	CGSize suggestedSize = [self sizeWithFont:withFont constrainedToSize:CGSizeMake(width, FLT_MAX) lineBreakMode:lineBreakMode];
-	[withFont release];
 	
 	return suggestedSize;
 }

@@ -57,9 +57,9 @@ typedef enum {
 	UILabel *subtitle;
 
 }
-@property (retain,nonatomic) UILabel *title;
-@property (retain,nonatomic) UILabel *subtitle;
-@property (retain,nonatomic) UIImage *mask;
+@property (strong,nonatomic) UILabel *title;
+@property (strong,nonatomic) UILabel *subtitle;
+@property (strong,nonatomic) UIImage *mask;
 
 
 - (id) initWithFrame:(CGRect)frame 

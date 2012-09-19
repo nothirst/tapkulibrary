@@ -45,20 +45,18 @@ static UIFont *subtitlefont = nil;
 {
 	if(self == [FSSubtitleCell class])
 	{
-		titlefont = [[UIFont boldSystemFontOfSize:18] retain];
-		subtitlefont = [[UIFont boldSystemFontOfSize:13] retain];
+		titlefont = [UIFont boldSystemFontOfSize:18];
+		subtitlefont = [UIFont boldSystemFontOfSize:13];
 	}
 }
 
 
 - (void) setTitle:(NSString*)s{
-	[title release];
 	title = [s copy];
 	[self setNeedsDisplay];
 }
 
 - (void) setSubtitle:(NSString*)s{
-	[subtitle release];
 	subtitle = [s copy];
 	[self setNeedsDisplay];
 }
@@ -116,11 +114,6 @@ static UIFont *subtitlefont = nil;
 
 
 
-- (void)dealloc {
-	[title release];
-	[subtitle release];
-    [super dealloc];
-}
 
 
 @end

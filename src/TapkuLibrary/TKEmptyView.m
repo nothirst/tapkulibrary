@@ -192,19 +192,10 @@
 	subtitle.frame = r;
 }
 - (void) setMask:(UIImage*)m{
-	[mask release];
-	mask = [m retain];
+	mask = m;
 	[self setNeedsDisplay];
 }
 
-- (void) dealloc {
-	
-	[title release];
-	[subtitle release];
-	[mask release];
-	
-    [super dealloc];
-}
 
 
 @end

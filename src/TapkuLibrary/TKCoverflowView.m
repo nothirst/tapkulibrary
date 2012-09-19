@@ -114,7 +114,6 @@
 	[yard removeAllObjects];
 	[views removeAllObjects];
 	
-	[coverViews release];
 	
 	
 	coverViews = [[NSMutableArray alloc] initWithCapacity:numberOfCovers];
@@ -372,7 +371,7 @@
 - (TKCoverView*) dequeueReusableCoverView{
 	if(yard == nil || [yard count] < 1) return nil;
 	
-	TKCoverView *v = [[[yard lastObject] retain] autorelease];
+	TKCoverView *v = [yard lastObject];
 	v.layer.transform = CATransform3DIdentity;
 	[yard removeLastObject];
 	return v;
@@ -456,13 +455,10 @@
 
 - (void)dealloc {	
 	
-	[coverViews release];
-	[views release];
 	currentTouch = nil;
 	coverFlowDelegate = nil;
 	dataSource = nil;
 	
-    [super dealloc];
 }
 
 

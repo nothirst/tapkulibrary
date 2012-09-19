@@ -76,17 +76,12 @@
 }
 
 - (void) setImage:(UIImage *)img{
-	[image release];
-	image = [img retain];
+	image = img;
 	[self setNeedsDisplay];
 }
 - (void) setBaseline:(float)f{
 	baseline = f;
 	[self setNeedsDisplay];
-}
-- (void) dealloc {
-	[image release];
-    [super dealloc];
 }
 
 

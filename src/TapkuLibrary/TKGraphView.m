@@ -79,7 +79,6 @@ static float highValue;
 
 - (void)setTitle:(NSString *)str
 {
-	[title release];
 	title = [str copy];
 	CGSize s = [title sizeWithFont:[UIFont boldSystemFontOfSize:11]];
 	CGRect r = self.frame;
@@ -88,11 +87,6 @@ static float highValue;
 	[self setNeedsDisplay];
 }
 
-- (void)dealloc
-{
-	[title release];
-	[super dealloc];
-}
 
 @end
 
@@ -139,12 +133,6 @@ static float highValue;
 
 	return self;
 }
-- (void)dealloc
-{
-	[background release];
-	[label release];
-	[super dealloc];
-}
 
 @end
 
@@ -154,7 +142,7 @@ static float highValue;
 	NSArray *data;
 }
 
-@property (retain, nonatomic) NSArray *data;
+@property (strong, nonatomic) NSArray *data;
 
 @end
 
@@ -163,8 +151,7 @@ static float highValue;
 
 - (void)setData:(NSArray *)d
 {
-	[data release];
-	data = [d retain];
+	data = d;
 	[self setNeedsDisplay];
 }
 
@@ -287,7 +274,6 @@ static float highValue;
 		[lab setTextColor:[UIColor grayColor]];
 		[lab setBackgroundColor:[UIColor clearColor]];
 		[self addSubview:lab];
-		[lab release];
 	}
 }
 - (void)drawRect:(CGRect)rect
@@ -307,11 +293,6 @@ static float highValue;
 	[[[self superview] superview] touchesEnded:touches withEvent:event];
 }
 
-- (void)dealloc
-{
-	[data release];
-	[super dealloc];
-}
 
 @end
 
@@ -451,7 +432,6 @@ static float highValue;
 
 	if (indicator != nil) {
 		[indicator removeFromSuperview];
-		[indicator release];
 	}
 
 	indicator = [[TKGraphViewIndicator alloc] initWithFrame:CGRectMake((int)x, originy, INDICATOR_WIDTH, INDICATOR_HEIGHT)
@@ -495,8 +475,7 @@ static float highValue;
 }
 - (void)setGoalValue:(NSNumber *)no
 {
-	[goalValue release];
-	goalValue = [no retain];
+	goalValue = no;
 
 	[self reload];
 	[self setGoalShown:goalShown];
@@ -504,8 +483,7 @@ static float highValue;
 
 - (void)setGraphWithDataPoints:(NSArray *)dataPoints
 {
-	[data release];
-	data = [dataPoints retain];
+	data = dataPoints;
 	[self calculateHighLow];
 	[self setNeedsDisplay];
 	[plotView setData:data];
@@ -651,18 +629,5 @@ static float highValue;
 	return (float)q;
 }
 
-- (void)dealloc
-{
-	[data release];
-	[goalValue release];
-	[goalLine release];
-	[goalLabel release];
-	[indicator release];
-	[titleLabel release];
-	[border release];
-	[scrollView release];
-	[plotView release];
-	[super dealloc];
-}
 
 @end

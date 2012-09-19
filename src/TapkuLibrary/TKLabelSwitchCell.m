@@ -71,10 +71,6 @@
 }
 
 
-- (void)dealloc {
-	[switcher release];
-    [super dealloc];
-}
 
 
 @end

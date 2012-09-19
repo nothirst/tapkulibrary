@@ -41,9 +41,9 @@
 	TKOverviewIndicatorView *indicator;
 }
 
-@property (nonatomic,retain) UILabel *title;
-@property (nonatomic,retain) UILabel *subtitle;
-@property (nonatomic,retain) TKOverviewIndicatorView *indicator;
+@property (nonatomic,strong) UILabel *title;
+@property (nonatomic,strong) UILabel *subtitle;
+@property (nonatomic,strong) TKOverviewIndicatorView *indicator;
 
 @end
 

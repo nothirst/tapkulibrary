@@ -36,5 +36,5 @@
 @interface TKLabelTextViewCell : TKLabelCell {
 	UITextView *textView;
 }
-@property (retain, nonatomic) UITextView *textView;
+@property (strong, nonatomic) UITextView *textView;
 @end

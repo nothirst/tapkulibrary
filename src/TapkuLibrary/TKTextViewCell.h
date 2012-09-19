@@ -32,5 +32,5 @@
 @interface TKTextViewCell : UITableViewCell {
 	UITextView *textView;
 }
-@property (nonatomic,retain) UITextView *textView;
+@property (nonatomic,strong) UITextView *textView;
 @end

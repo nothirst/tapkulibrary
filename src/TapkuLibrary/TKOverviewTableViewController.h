@@ -43,8 +43,8 @@
 }
 
 
-@property (nonatomic, retain) TKOverviewHeaderView *header;
-@property (nonatomic, retain) UITableView *tableView;
+@property (nonatomic, strong) TKOverviewHeaderView *header;
+@property (nonatomic, strong) UITableView *tableView;
 
 
 

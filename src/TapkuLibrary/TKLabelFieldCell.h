@@ -35,6 +35,6 @@
 @interface TKLabelFieldCell : TKLabelCell {
 	UILabel *field;
 }
-@property (retain, nonatomic) UILabel *field;
+@property (strong, nonatomic) UILabel *field;
 @end
 

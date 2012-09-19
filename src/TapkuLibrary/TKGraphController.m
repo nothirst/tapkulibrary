@@ -49,7 +49,7 @@
 	//graph.backgroundColor = [UIColor whiteColor];
 	//[self.view addSubview:graph];
 	
-	close = [[UIButton buttonWithType:UIButtonTypeCustom] retain];
+	close = [UIButton buttonWithType:UIButtonTypeCustom];
 	close.frame = CGRectMake(-10, 0, 65, 45);
 	
 	
@@ -92,10 +92,6 @@
 - (void) viewDidUnload {
 	// Release any retained subviews of the main view.
 	// e.g. self.myOutlet = nil;
-}
-- (void) dealloc {
-	[graph release];
-	[super dealloc];
 }
 
 

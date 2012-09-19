@@ -102,11 +102,6 @@
 #pragma mark -
 #pragma mark Dealloc
 
-- (void)dealloc {
-	[_calendarDayTimelineView release];
-	
-    [super dealloc];
-}
 
 
 @end

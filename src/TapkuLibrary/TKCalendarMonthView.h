@@ -37,8 +37,8 @@
 
 @interface TKCalendarMonthView : UIView {
 	
-	id <TKCalendarMonthViewDelegate> delegate;
-	id <TKCalendarMonthViewDataSource> dataSource;
+	id <TKCalendarMonthViewDelegate> __unsafe_unretained delegate;
+	id <TKCalendarMonthViewDataSource> __unsafe_unretained dataSource;
 	
 	NSDate *currentMonth;
 	NSDate *selectedMonth;
@@ -57,10 +57,10 @@
 	
 }
 @property (readonly,nonatomic) NSString *monthYear;
-@property (readonly,nonatomic) NSDate *monthDate;
-@property (nonatomic, retain) NSDate *selectedDate;
-@property (assign,nonatomic) id <TKCalendarMonthViewDataSource> dataSource;
-@property (assign,nonatomic) id <TKCalendarMonthViewDelegate> delegate;
+@property (unsafe_unretained, readonly,nonatomic) NSDate *monthDate;
+@property (nonatomic, strong) NSDate *selectedDate;
+@property (unsafe_unretained,nonatomic) id <TKCalendarMonthViewDataSource> dataSource;
+@property (unsafe_unretained,nonatomic) id <TKCalendarMonthViewDelegate> delegate;
 
 - (id) init;
 - (void) reload;

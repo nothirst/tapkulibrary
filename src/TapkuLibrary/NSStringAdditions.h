@@ -34,7 +34,7 @@
 
 
 - (CGSize) heightWithFont:(UIFont*)withFont 
-					width:(float)width 
+					width:(float)width
 				linebreak:(UILineBreakMode)lineBreakMode;
 
 

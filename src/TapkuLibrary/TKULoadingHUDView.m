@@ -29,6 +29,7 @@
 
  */
 #import "TKULoadingHUDView.h"
+
 #import "NSString+TKUAdditions.h"
 #import "UIView+TKUAdditions.h"
 
@@ -60,6 +61,7 @@
     }
     return self;
 }
+
 - (id)initWithTitle:(NSString *)ttl
 {
     self = [self initWithTitle:ttl message:nil];
@@ -71,7 +73,6 @@
 
 - (void)drawRect:(CGRect)rect
 {
-//	if(_hidden) return;
     int width, rWidth, rHeight, x;
 
     UIFont *titleFont = [UIFont boldSystemFontOfSize:18];
@@ -104,8 +105,6 @@
 
     _activity.center = CGPointMake(280 / 2, HEIGHT_MARGIN + _activity.frame.size.height / 2);
     self.progressView.center = CGPointMake(280 / 2, HEIGHT_MARGIN + self.progressView.frame.size.height / 2);
-
-    // NSLog(@"DRAW RECT %d %f",rHeight,self.frame.size.height);
 
     // DRAW ROUNDED RECTANGLE
     [[UIColor colorWithRed:0 green:0 blue:0 alpha:0.9] set];
@@ -149,9 +148,9 @@
 - (void)setTitle:(NSString *)str
 {
     _title = [str copy];
-    // [self updateHeight];
     [self setNeedsDisplay];
 }
+
 - (NSString *)title
 {
     return _title;
@@ -162,6 +161,7 @@
     _message = [str copy];
     [self setNeedsDisplay];
 }
+
 - (NSString *)message
 {
     return _message;
@@ -186,6 +186,7 @@
     [self setNeedsDisplay];
     [_activity startAnimating];
 }
+
 - (void)stopAnimating
 {
     if (_hidden) {
@@ -202,6 +203,7 @@
             constrainedToSize:CGSizeMake(width, FLT_MAX)
                 lineBreakMode:lineBreakMode];
 }
+
 - (void)adjustHeight
 {
     CGSize s1 = [_title heightWithFont:[UIFont boldSystemFontOfSize:16.0]

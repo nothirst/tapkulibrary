@@ -34,9 +34,7 @@
 
 - (CGSize)heightWithFont:(UIFont *)withFont width:(float)width linebreak:(UILineBreakMode)lineBreakMode
 {
-    CGSize suggestedSize = [self sizeWithFont:withFont constrainedToSize:CGSizeMake(width, FLT_MAX) lineBreakMode:lineBreakMode];
-
-    return suggestedSize;
+    return [self sizeWithFont:withFont constrainedToSize:CGSizeMake(width, FLT_MAX) lineBreakMode:lineBreakMode];
 }
 
 @end

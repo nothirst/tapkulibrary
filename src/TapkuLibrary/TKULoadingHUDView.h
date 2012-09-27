@@ -31,14 +31,7 @@
 
 #import <UIKit/UIKit.h>
 
-@interface TKULoadingHUDView : UIView {
-    UIActivityIndicatorView *_activity;
-    BOOL _hidden;
-
-    NSString *_title;
-    NSString *_message;
-    float radius;
-}
+@interface TKULoadingHUDView : UIView
 
 @property (copy, nonatomic) NSString *title;
 @property (copy, nonatomic) NSString *message;

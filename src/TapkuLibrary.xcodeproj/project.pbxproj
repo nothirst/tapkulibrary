@@ -7,8 +7,6 @@
 	objects = {
 
 /* Begin PBXBuildFile section */
-		3B879FC6109BFC07002012FD /* TKUCalendarMonthTableViewController.h in Headers */ = {isa = PBXBuildFile; fileRef = 3B879FC4109BFC07002012FD /* TKUCalendarMonthTableViewController.h */; };
-		3B879FC7109BFC07002012FD /* TKUCalendarMonthTableViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 3B879FC5109BFC07002012FD /* TKUCalendarMonthTableViewController.m */; };
 		3BAC995A10953DF400F235F1 /* SystemConfiguration.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 3BAC995510953DF400F235F1 /* SystemConfiguration.framework */; };
 		3BAC995B10953DF400F235F1 /* CoreGraphics.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 3BAC995610953DF400F235F1 /* CoreGraphics.framework */; };
 		3BAC995C10953DF400F235F1 /* UIKit.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 3BAC995710953DF400F235F1 /* UIKit.framework */; };
@@ -36,8 +34,6 @@
 /* End PBXBuildFile section */
 
 /* Begin PBXFileReference section */
-		3B879FC4109BFC07002012FD /* TKUCalendarMonthTableViewController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = TKUCalendarMonthTableViewController.h; sourceTree = "<group>"; };
-		3B879FC5109BFC07002012FD /* TKUCalendarMonthTableViewController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = TKUCalendarMonthTableViewController.m; sourceTree = "<group>"; };
 		3BAC995510953DF400F235F1 /* SystemConfiguration.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = SystemConfiguration.framework; path = System/Library/Frameworks/SystemConfiguration.framework; sourceTree = SDKROOT; };
 		3BAC995610953DF400F235F1 /* CoreGraphics.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = CoreGraphics.framework; path = System/Library/Frameworks/CoreGraphics.framework; sourceTree = SDKROOT; };
 		3BAC995710953DF400F235F1 /* UIKit.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = UIKit.framework; path = System/Library/Frameworks/UIKit.framework; sourceTree = SDKROOT; };
@@ -172,8 +168,6 @@
 			children = (
 				3BAC99FE10953E2400F235F1 /* TKUCalendarMonthViewController.h */,
 				3BAC99FF10953E2400F235F1 /* TKUCalendarMonthViewController.m */,
-				3B879FC4109BFC07002012FD /* TKUCalendarMonthTableViewController.h */,
-				3B879FC5109BFC07002012FD /* TKUCalendarMonthTableViewController.m */,
 				3BAC99FC10953E2400F235F1 /* TKUCalendarMonthView.h */,
 				3BAC99FD10953E2400F235F1 /* TKUCalendarMonthView.m */,
 			);
@@ -197,7 +191,6 @@
 				3BAC9A5C10953E5200F235F1 /* NSDate+TKUAdditions.h in Headers */,
 				3BAC9A7410953E5200F235F1 /* TKULoadingHUDView.h in Headers */,
 				3BF000FE10957EE50062DA49 /* NSString+TKUAdditions.h in Headers */,
-				3B879FC6109BFC07002012FD /* TKUCalendarMonthTableViewController.h in Headers */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -260,7 +253,6 @@
 				3BAC9A5D10953E5200F235F1 /* NSDate+TKUAdditions.m in Sources */,
 				3BAC9A7510953E5200F235F1 /* TKULoadingHUDView.m in Sources */,
 				3BF000FF10957EE50062DA49 /* NSString+TKUAdditions.m in Sources */,
-				3B879FC7109BFC07002012FD /* TKUCalendarMonthTableViewController.m in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};

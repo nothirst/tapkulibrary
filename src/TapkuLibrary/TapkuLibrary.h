@@ -27,7 +27,6 @@
 
 #import "NSDate+TKUAdditions.h"
 
-#import "TKUCalendarMonthTableViewController.h"
 #import "TKUCalendarMonthView.h"
 #import "TKUCalendarMonthViewController.h"
 #import "TKUGlobal.h"

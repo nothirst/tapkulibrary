@@ -32,12 +32,7 @@
 #import "TKUCalendarMonthView.h"
 #import <UIKit/UIKit.h>
 
-@class TKUCalendarMonthView;
-@protocol TKCalendarMonthViewDelegate, TKCalendarMonthViewDataSource;
-
-@interface TKUCalendarMonthViewController : UIViewController <TKCalendarMonthViewDelegate, TKCalendarMonthViewDataSource> {
-    TKUCalendarMonthView *monthView;
-}
+@interface TKUCalendarMonthViewController : UIViewController <TKUCalendarMonthViewDelegate, TKUCalendarMonthViewDataSource>
 
 @property (strong, nonatomic) TKUCalendarMonthView *monthView;
 

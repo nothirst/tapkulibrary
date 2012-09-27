@@ -32,25 +32,14 @@
 
 @implementation UIView (TKUAdditions)
 
-CGPoint demoLGStart(CGRect bounds)
+CGPoint linearGradientStartPoint(CGRect bounds)
 {
     return CGPointMake(bounds.origin.x, bounds.origin.y + bounds.size.height * 0.25);
 }
 
-CGPoint demoLGEnd(CGRect bounds)
+CGPoint linearGradientEndPoint(CGRect bounds)
 {
     return CGPointMake(bounds.origin.x, bounds.origin.y + bounds.size.height * 0.75);
-}
-
-CGPoint demoRGCenter(CGRect bounds)
-{
-    return CGPointMake(CGRectGetMidX(bounds), CGRectGetMidY(bounds));
-}
-
-CGFloat demoRGInnerRadius(CGRect bounds)
-{
-    CGFloat r = bounds.size.width < bounds.size.height ? bounds.size.width : bounds.size.height;
-    return r * 0.125;
 }
 
 + (void)drawLinearGradientInRect:(CGRect)rect colors:(CGFloat[])colours
@@ -64,8 +53,8 @@ CGFloat demoRGInnerRadius(CGRect bounds)
     CGColorSpaceRelease(rgb);
     CGPoint start, end;
 
-    start = demoLGStart(rect);
-    end = demoLGEnd(rect);
+    start = linearGradientStartPoint(rect);
+    end = linearGradientEndPoint(rect);
 
     CGContextClipToRect(context, rect);
     CGContextDrawLinearGradient(context, gradient, start, end, kCGGradientDrawsBeforeStartLocation | kCGGradientDrawsAfterEndLocation);

@@ -35,41 +35,20 @@
 
 @implementation TKUCalendarMonthViewController
 
-@synthesize monthView;
-
 - (void)viewDidLoad
 {
     [super viewDidLoad];
 
-    monthView = [[TKUCalendarMonthView alloc] init];
-    monthView.delegate = self;
-    monthView.dataSource = self;
-    [self.view addSubview:monthView];
-    [monthView reload];
+    self.monthView = [[TKUCalendarMonthView alloc] init];
+    self.monthView.delegate = self;
+    self.monthView.dataSource = self;
+    [self.view addSubview:self.monthView];
+    [self.monthView reload];
 }
 
 - (BOOL)calendarMonthView:(TKUCalendarMonthView *)monthView markForDay:(NSDate *)date
 {
     return NO;
-}
-
-- (BOOL)shouldAutorotateToInterfaceOrientation:(UIInterfaceOrientation)interfaceOrientation
-{
-    return NO;
-}
-
-- (void)didReceiveMemoryWarning
-{
-    // Releases the view if it doesn't have a superview.
-    [super didReceiveMemoryWarning];
-
-    // Release any cached data, images, etc that aren't in use.
-}
-
-- (void)viewDidUnload
-{
-    // Release any retained subviews of the main view.
-    // e.g. self.myOutlet = nil;
 }
 
 @end

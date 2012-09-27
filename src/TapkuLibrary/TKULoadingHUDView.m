@@ -40,14 +40,18 @@
 
 @property (nonatomic, strong) UIProgressView *progressView;
 
+@property UIActivityIndicatorView *activity;
+@property BOOL hidden;
+
 - (CGSize)calculateHeightOfTextFromWidth:(NSString *)text font:(UIFont *)withFont width:(float)width linebreak:(UILineBreakMode)lineBreakMode;
 
 @end
 
 @implementation TKULoadingHUDView
 
-@synthesize radius;
-@synthesize progressView = _progressView;
+@synthesize title = _title;
+@synthesize message = _message;
+@synthesize radius = _radius;
 
 - (id)initWithTitle:(NSString *)ttl message:(NSString *)msg
 {
@@ -151,29 +155,19 @@
     [self setNeedsDisplay];
 }
 
-- (NSString *)title
-{
-    return _title;
-}
-
 - (void)setMessage:(NSString *)str
 {
     _message = [str copy];
     [self setNeedsDisplay];
 }
 
-- (NSString *)message
-{
-    return _message;
-}
-
 - (void)setRadius:(float)f
 {
-    if (f == radius) {
+    if (f == _radius) {
         return;
     }
 
-    radius = f;
+    _radius = f;
     [self setNeedsDisplay];
 }
 
@@ -217,11 +211,6 @@
     CGRect r = self.frame;
     r.size.height = s1.height + s2.height + 20;
     self.frame = r;
-}
-
-- (void)dealloc
-{
-    _progressView = nil;
 }
 
 - (UIProgressView *)progressView

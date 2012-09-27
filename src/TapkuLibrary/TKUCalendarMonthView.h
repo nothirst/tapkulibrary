@@ -31,47 +31,29 @@
 
 #import <UIKit/UIKit.h>
 
-@class TKMonthGridView, TKCalendarDayView;
-@protocol TKCalendarMonthViewDelegate, TKCalendarMonthViewDataSource;
+@class TKUMonthGridView, TKUCalendarDayView;
+@protocol TKUCalendarMonthViewDelegate, TKUCalendarMonthViewDataSource;
 
-@interface TKUCalendarMonthView : UIView {
-    id <TKCalendarMonthViewDelegate> __unsafe_unretained delegate;
-    id <TKCalendarMonthViewDataSource> __unsafe_unretained dataSource;
+@interface TKUCalendarMonthView : UIView
 
-    NSDate *currentMonth;
-    NSDate *selectedMonth;
-    NSDate *selectedDate;
-
-    NSMutableArray *deck;
-
-    UIButton *left;
-    NSString *monthYear;
-    UIButton *right;
-
-    UIImageView *shadow;
-    UIScrollView *scrollView;
-}
-
-@property (readonly, nonatomic) NSString *monthYear;
 @property (unsafe_unretained, readonly, nonatomic) NSDate *monthDate;
 @property (nonatomic, strong) NSDate *selectedDate;
-@property (unsafe_unretained, nonatomic) id <TKCalendarMonthViewDataSource> dataSource;
-@property (unsafe_unretained, nonatomic) id <TKCalendarMonthViewDelegate> delegate;
+@property (unsafe_unretained, nonatomic) id <TKUCalendarMonthViewDataSource> dataSource;
+@property (unsafe_unretained, nonatomic) id <TKUCalendarMonthViewDelegate> delegate;
 
-- (id)init;
 - (void)reload;
 - (void)selectDate:(NSDate *)date;
 
 @end
 
-@protocol TKCalendarMonthViewDataSource<NSObject>
+@protocol TKUCalendarMonthViewDataSource <NSObject>
 
 @required
 - (BOOL)calendarMonthView:(TKUCalendarMonthView *)monthView markForDay:(NSDate *)date;
 
 @end
 
-@protocol TKCalendarMonthViewDelegate<NSObject>
+@protocol TKUCalendarMonthViewDelegate <NSObject>
 
 @optional
 - (void)calendarMonthView:(TKUCalendarMonthView *)monthView dateWasSelected:(NSDate *)date;

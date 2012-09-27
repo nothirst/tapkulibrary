@@ -31,7 +31,7 @@
 
 #import <UIKit/UIKit.h>
 
-@interface LoadingHUDView : UIView {
+@interface TKULoadingHUDView : UIView {
     UIActivityIndicatorView *_activity;
     BOOL _hidden;
 

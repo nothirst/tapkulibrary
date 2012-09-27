@@ -35,7 +35,7 @@
 @protocol TKCalendarMonthViewDelegate, TKCalendarMonthViewDataSource;
 
 
-@interface TKCalendarMonthView : UIView {
+@interface TKUCalendarMonthView : UIView {
 	
 	id <TKCalendarMonthViewDelegate> __unsafe_unretained delegate;
 	id <TKCalendarMonthViewDataSource> __unsafe_unretained dataSource;
@@ -72,14 +72,14 @@
 
 @protocol TKCalendarMonthViewDataSource<NSObject>
 @required
-- (BOOL) calendarMonthView:(TKCalendarMonthView*)monthView markForDay:(NSDate*)date;
+- (BOOL) calendarMonthView:(TKUCalendarMonthView*)monthView markForDay:(NSDate*)date;
 @end
 
 
 @protocol TKCalendarMonthViewDelegate<NSObject>
 @optional
-- (void) calendarMonthView:(TKCalendarMonthView*)monthView dateWasSelected:(NSDate*)date;
-- (void) calendarMonthView:(TKCalendarMonthView*)monthView monthWillAppear:(NSDate*)month;
-- (void) calendarMonthView:(TKCalendarMonthView*)monthView monthDidAppear:(NSDate*)month;
+- (void) calendarMonthView:(TKUCalendarMonthView*)monthView dateWasSelected:(NSDate*)date;
+- (void) calendarMonthView:(TKUCalendarMonthView*)monthView monthWillAppear:(NSDate*)month;
+- (void) calendarMonthView:(TKUCalendarMonthView*)monthView monthDidAppear:(NSDate*)month;
 @end
 

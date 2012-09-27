@@ -1,6 +1,6 @@
 //
-//  TKCalendarMonthTableViewController.h
-//  Created by Devin Ross on 10/31/09.
+//  UIViewAdditions.h
+//  Created by Devin Ross on 7/25/09.
 //
 /*
  
@@ -28,11 +28,26 @@
  OTHER DEALINGS IN THE SOFTWARE.
  
  */
-#import <UIKit/UIKit.h>
-#import "TKCalendarMonthViewController.h"
 
-@interface TKCalendarMonthTableViewController : TKCalendarMonthViewController <UITableViewDelegate, UITableViewDataSource>  {
-	UITableView *tableView;
-}
-@property (strong,nonatomic) UITableView *tableView;
+
+#import <UIKit/UIKit.h>
+
+@interface UIView (TKUAdditions)
+
+
+// DRAW GRADIENT
++ (void) drawLinearGradientInRect:(CGRect)rect colors:(CGFloat[])colors;
+
+
+// DRAW ROUNDED RECTANGLE
++ (void) drawRoundRectangleInRect:(CGRect)rect withRadius:(CGFloat)radius color:(UIColor*)color;
+
+// DRAW LINE
++ (void) drawLineInRect:(CGRect)rect red:(CGFloat)red green:(CGFloat)green blue:(CGFloat)blue alpha:(CGFloat)alpha;
++ (void) drawLineInRect:(CGRect)rect colors:(CGFloat[])colors;
++ (void) drawLineInRect:(CGRect)rect colors:(CGFloat[])colors width:(CGFloat)lineWidth cap:(CGLineCap)cap;
+
 @end
+
+
+

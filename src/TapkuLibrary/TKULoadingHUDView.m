@@ -28,14 +28,14 @@
    OTHER DEALINGS IN THE SOFTWARE.
 
  */
-#import "LoadingHUDView.h"
-#import "NSStringAdditions.h"
-#import "UIViewAdditions.h"
+#import "TKULoadingHUDView.h"
+#import "NSString+TKUAdditions.h"
+#import "UIView+TKUAdditions.h"
 
 #define WIDTH_MARGIN  20
 #define HEIGHT_MARGIN 20
 
-@interface LoadingHUDView ()
+@interface TKULoadingHUDView ()
 
 @property (nonatomic, strong) UIProgressView *progressView;
 
@@ -43,7 +43,7 @@
 
 @end
 
-@implementation LoadingHUDView
+@implementation TKULoadingHUDView
 
 @synthesize radius;
 @synthesize progressView = _progressView;

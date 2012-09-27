@@ -28,10 +28,10 @@
  OTHER DEALINGS IN THE SOFTWARE.
  
  */
-#import "NSDateAdditions.h"
+#import "NSDate+TKUAdditions.h"
 
 
-@implementation NSDate (TKCategory)
+@implementation NSDate (TKUAdditions)
 
 
 - (TKDateInformation) dateInformation{

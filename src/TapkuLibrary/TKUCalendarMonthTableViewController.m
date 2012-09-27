@@ -28,10 +28,10 @@
  OTHER DEALINGS IN THE SOFTWARE.
  
  */
-#import "TKCalendarMonthTableViewController.h"
-#import "NSDateAdditions.h"
+#import "TKUCalendarMonthTableViewController.h"
+#import "NSDate+TKUAdditions.h"
 
-@implementation TKCalendarMonthTableViewController
+@implementation TKUCalendarMonthTableViewController
 @synthesize tableView;
 
 
@@ -50,7 +50,7 @@
 	[self.view sendSubviewToBack:tableView];
 }
 
-- (void) calendarMonthView:(TKCalendarMonthView*)mv monthWillAppear:(NSDate*)month{
+- (void) calendarMonthView:(TKUCalendarMonthView*)mv monthWillAppear:(NSDate*)month{
 	float y = mv.frame.origin.y + mv.frame.size.height;
 	float height = self.view.frame.size.height - y;
 	tableView.frame = CGRectMake(0, y, 320, height);
@@ -84,7 +84,7 @@
 }
 
 
-- (BOOL) calendarMonthView:(TKCalendarMonthView*)monthView markForDay:(NSDate*)date{
+- (BOOL) calendarMonthView:(TKUCalendarMonthView*)monthView markForDay:(NSDate*)date{
 
 	return NO;
 }

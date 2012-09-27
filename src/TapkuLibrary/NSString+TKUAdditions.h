@@ -1,6 +1,6 @@
 //
-//  TKGlobal.m
-//  Created by Devin Ross on 7/25/09.
+//  NSStringAddition.h
+//  Created by Devin Ross on 10/26/09.
 //
 /*
  
@@ -28,15 +28,14 @@
  OTHER DEALINGS IN THE SOFTWARE.
  
  */
-#import "TKGlobal.h"
 
 
-@implementation TKGlobal
+@interface NSString (TKUAdditions)
 
 
-+ (NSString*) fullBundlePath:(NSString*)bundlePath{
-	return [[[NSBundle mainBundle] resourcePath] stringByAppendingPathComponent:bundlePath];
-}
+- (CGSize) heightWithFont:(UIFont*)withFont 
+					width:(float)width
+				linebreak:(UILineBreakMode)lineBreakMode;
 
 
 

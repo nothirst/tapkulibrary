@@ -28,10 +28,12 @@
  OTHER DEALINGS IN THE SOFTWARE.
  
  */
-#import "UIImageAdditions.h"
-#import "UIViewAdditions.h"
 
-@implementation UIImage (TKCategory)
+#import "UIImage+TKUAdditions.h"
+
+#import "UIView+TKUAdditions.h"
+
+@implementation UIImage (TKUAdditions)
 
 + (UIImage*) imageFromPath:(NSString*)URL{
 	return 	[UIImage imageWithData:[NSData dataWithContentsOfFile:URL]];

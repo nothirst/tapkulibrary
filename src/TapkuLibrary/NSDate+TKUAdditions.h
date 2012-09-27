@@ -31,7 +31,7 @@
 #import <Foundation/Foundation.h>
 
 
-@interface NSDate (TKCategory)
+@interface NSDate (TKUAdditions)
 
 struct TKDateInformation {
 	int day;

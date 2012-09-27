@@ -1,6 +1,6 @@
 //
-//  DaterViewController.m
-//  Created by Devin Ross on 7/28/09.
+//  NSStringAddition.m
+//  Created by Devin Ross on 10/26/09.
 //
 /*
  
@@ -27,44 +27,22 @@
  FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR
  OTHER DEALINGS IN THE SOFTWARE.
  
-*/
-#import "TKCalendarMonthViewController.h"
-#import "TKCalendarMonthView.h"
+ */
+#import "NSString+TKUAdditions.h"
 
 
-@implementation TKCalendarMonthViewController
-@synthesize monthView;
+@implementation NSString (TKUAdditions)
 
 
+- (CGSize) heightWithFont:(UIFont*)withFont 
+					width:(float)width 
+				linebreak:(UILineBreakMode)lineBreakMode{
 
-- (void)viewDidLoad {
-    [super viewDidLoad];
+
+	CGSize suggestedSize = [self sizeWithFont:withFont constrainedToSize:CGSizeMake(width, FLT_MAX) lineBreakMode:lineBreakMode];
 	
-	monthView = [[TKCalendarMonthView alloc] init];
-	monthView.delegate = self;
-	monthView.dataSource = self;
-	[self.view addSubview:monthView];
-	[monthView reload];
+	return suggestedSize;
 }
 
-
-- (BOOL) calendarMonthView:(TKCalendarMonthView*)monthView markForDay:(NSDate*)date{
-	return NO;
-}
-
-
-- (BOOL)shouldAutorotateToInterfaceOrientation:(UIInterfaceOrientation)interfaceOrientation {
-	return NO;
-}
-- (void)didReceiveMemoryWarning {
-	// Releases the view if it doesn't have a superview.
-    [super didReceiveMemoryWarning];
-	
-	// Release any cached data, images, etc that aren't in use.
-}
-- (void)viewDidUnload {
-	// Release any retained subviews of the main view.
-	// e.g. self.myOutlet = nil;
-}
 
 @end

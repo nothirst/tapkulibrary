@@ -1,6 +1,6 @@
 //
-//  DaterViewController.h
-//  Created by Devin Ross on 7/28/09.
+//  UIImageAdditions.h
+//  Created by Devin Ross on 7/25/09.
 //
 /*
  
@@ -30,15 +30,15 @@
  */
 
 #import <UIKit/UIKit.h>
-#import "TKCalendarMonthView.h"
 
-@class TKCalendarMonthView;
-@protocol TKCalendarMonthViewDelegate,TKCalendarMonthViewDataSource;
+@interface UIImage (TKUAdditions)
 
-@interface TKCalendarMonthViewController : UIViewController <TKCalendarMonthViewDelegate,TKCalendarMonthViewDataSource> {
-	TKCalendarMonthView *monthView;
-}
-@property (strong,nonatomic) TKCalendarMonthView *monthView;
+
++ (UIImage*) imageFromPath:(NSString*)URL;
+
+
+- (void) drawInRect:(CGRect)rect asAlphaMaskForColor:(CGFloat[])color;
+- (void) drawInRect:(CGRect)rect asAlphaMaskForGradient:(CGFloat[])colors;
 
 @end
 

@@ -28,11 +28,11 @@
    OTHER DEALINGS IN THE SOFTWARE.
 
  */
-#import "NSDateAdditions.h"
-#import "TKCalendarMonthView.h"
-#import "TKGlobal.h"
-#import "UIImageAdditions.h"
-#import "UIViewAdditions.h"
+#import "NSDate+TKUAdditions.h"
+#import "TKUCalendarMonthView.h"
+#import "TKUGlobal.h"
+#import "UIImage+TKUAdditions.h"
+#import "UIView+TKUAdditions.h"
 
 @interface TKMonthGridView : UIView {
 	id __unsafe_unretained delegate;
@@ -83,7 +83,7 @@
 
 @end
 
-@interface TKCalendarMonthView (PrivateMethods)
+@interface TKUCalendarMonthView (PrivateMethods)
 - (void)loadButtons;
 - (void)loadInitialGrids;
 - (NSArray *)getMarksDataWithDate:(NSDate *)date;
@@ -97,19 +97,19 @@
 - (void)selectDayInMonth;
 @end
 
-@implementation TKCalendarMonthView (Private)
+@implementation TKUCalendarMonthView (Private)
 
 // private: init functions
 - (void)loadButtons
 {
 	left = [UIButton buttonWithType:UIButtonTypeCustom];
 	[left addTarget:self action:@selector(leftButtonTapped) forControlEvents:UIControlEventTouchUpInside];
-	[left setImage:[UIImage imageFromPath:TKBUNDLE(@"TapkuLibrary.bundle/Images/calendar/leftarrow.png")] forState:0];
+	[left setImage:[UIImage imageFromPath:TKUBUNDLE(@"TapkuLibrary.bundle/Images/calendar/leftarrow.png")] forState:0];
 	[self addSubview:left];
 	left.frame = CGRectMake(10, 0, 44, 42);
 
 	right = [UIButton buttonWithType:UIButtonTypeCustom];
-	[right setImage:[UIImage imageFromPath:TKBUNDLE(@"TapkuLibrary.bundle/Images/calendar/rightarrow.png")] forState:0];
+	[right setImage:[UIImage imageFromPath:TKUBUNDLE(@"TapkuLibrary.bundle/Images/calendar/rightarrow.png")] forState:0];
 	[right addTarget:self action:@selector(rightButtonTapped) forControlEvents:UIControlEventTouchUpInside];
 	[self addSubview:right];
 	right.frame = CGRectMake(320 - 56, 0, 44, 42);
@@ -382,7 +382,7 @@
 
 @end
 
-@implementation TKCalendarMonthView
+@implementation TKUCalendarMonthView
 
 @synthesize delegate, dataSource;
 @synthesize monthYear;
@@ -410,7 +410,7 @@
 		scrollView.scrollEnabled = NO;
 		scrollView.backgroundColor = [UIColor colorWithRed:222 / 255.0 green:222 / 255.0 blue:225 / 255.0 alpha:1];
 
-		shadow = [[UIImageView alloc] initWithImage:[UIImage imageFromPath:TKBUNDLE(@"TapkuLibrary.bundle/Images/calendar/shadow.png")]];
+		shadow = [[UIImageView alloc] initWithImage:[UIImage imageFromPath:TKUBUNDLE(@"TapkuLibrary.bundle/Images/calendar/shadow.png")]];
 		deck = [[NSMutableArray alloc] initWithCapacity:3];
 
 		[self addSubview:shadow];
@@ -555,7 +555,7 @@
 
 	// [self reload];
 
-	[[UIImage imageFromPath:TKBUNDLE(@"TapkuLibrary.bundle/Images/calendar/topbar.png")] drawAtPoint:CGPointMake(0, 0)];
+	[[UIImage imageFromPath:TKUBUNDLE(@"TapkuLibrary.bundle/Images/calendar/topbar.png")] drawAtPoint:CGPointMake(0, 0)];
 
 	[self drawDayLabels:rect];
 	[self drawMonthLabel:rect];
@@ -967,19 +967,19 @@
 	if (!active) {
 		// color = [UIColor colorWithRed:36.0/255.0 green:49/255.0 blue:64/255.0 alpha:1];
 		color = [UIColor grayColor];
-		d = [UIImage imageFromPath:TKBUNDLE(@"TapkuLibrary.bundle/Images/calendar/datecell.png")];
+		d = [UIImage imageFromPath:TKUBUNDLE(@"TapkuLibrary.bundle/Images/calendar/datecell.png")];
 	} else if (today && selected) {
 		color = [UIColor whiteColor];
-		d = [UIImage imageFromPath:TKBUNDLE(@"TapkuLibrary.bundle/Images/calendar/todayselected.png")];
+		d = [UIImage imageFromPath:TKUBUNDLE(@"TapkuLibrary.bundle/Images/calendar/todayselected.png")];
 	} else if (today) {
 		color = [UIColor whiteColor];
-		d = [UIImage imageFromPath:TKBUNDLE(@"TapkuLibrary.bundle/Images/calendar/today.png")];
+		d = [UIImage imageFromPath:TKUBUNDLE(@"TapkuLibrary.bundle/Images/calendar/today.png")];
 	} else if (selected) {
 		color = [UIColor whiteColor];
-		d = [UIImage imageFromPath:TKBUNDLE(@"TapkuLibrary.bundle/Images/calendar/datecellselected.png")];
+		d = [UIImage imageFromPath:TKUBUNDLE(@"TapkuLibrary.bundle/Images/calendar/datecellselected.png")];
 	} else {
 		color = [UIColor colorWithRed:75.0 / 255.0 green:92 / 255.0 blue:111 / 255.0 alpha:1];
-		d = [UIImage imageFromPath:TKBUNDLE(@"TapkuLibrary.bundle/Images/calendar/datecell.png")];
+		d = [UIImage imageFromPath:TKUBUNDLE(@"TapkuLibrary.bundle/Images/calendar/datecell.png")];
 	}
 
 	[d drawAtPoint:CGPointMake(0, 0)];

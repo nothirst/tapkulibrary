@@ -28,10 +28,10 @@
  OTHER DEALINGS IN THE SOFTWARE.
  
  */
-#import "UIViewAdditions.h"
+#import "UIView+TKUAdditions.h"
 
 
-@implementation UIView (TKCategory)
+@implementation UIView (TKUAdditions)
 
 
 // Returns an appropriate starting point for the demonstration of a linear gradient

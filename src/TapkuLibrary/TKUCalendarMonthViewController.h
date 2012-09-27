@@ -1,6 +1,6 @@
 //
-//  TKGlobal.h
-//  Created by Devin Ross on 7/25/09.
+//  DaterViewController.h
+//  Created by Devin Ross on 7/28/09.
 //
 /*
  
@@ -30,15 +30,15 @@
  */
 
 #import <UIKit/UIKit.h>
+#import "TKUCalendarMonthView.h"
 
-#define TKBUNDLE(_URL) [TKGlobal fullBundlePath:_URL]
+@class TKUCalendarMonthView;
+@protocol TKCalendarMonthViewDelegate,TKCalendarMonthViewDataSource;
 
-@interface TKGlobal : NSObject {
-
+@interface TKUCalendarMonthViewController : UIViewController <TKCalendarMonthViewDelegate,TKCalendarMonthViewDataSource> {
+	TKUCalendarMonthView *monthView;
 }
-
-
-+ (NSString*) fullBundlePath:(NSString*)bundlePath;
-
+@property (strong,nonatomic) TKUCalendarMonthView *monthView;
 
 @end
+

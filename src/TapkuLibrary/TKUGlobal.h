@@ -1,5 +1,5 @@
 //
-//  UIImageAdditions.h
+//  TKGlobal.h
 //  Created by Devin Ross on 7/25/09.
 //
 /*
@@ -31,14 +31,14 @@
 
 #import <UIKit/UIKit.h>
 
-@interface UIImage (TKCategory)
+#define TKUBUNDLE(_URL) [TKUGlobal fullBundlePath:_URL]
+
+@interface TKUGlobal : NSObject {
+
+}
 
 
-+ (UIImage*) imageFromPath:(NSString*)URL;
++ (NSString*) fullBundlePath:(NSString*)bundlePath;
 
-
-- (void) drawInRect:(CGRect)rect asAlphaMaskForColor:(CGFloat[])color;
-- (void) drawInRect:(CGRect)rect asAlphaMaskForGradient:(CGFloat[])colors;
 
 @end
-

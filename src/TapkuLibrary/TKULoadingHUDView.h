@@ -1,3 +1,7 @@
+//
+//  LoadingHUDView.h
+//  Created by Devin Ross on 7/2/09.
+//
 /*
 
    tapku.com || http://github.com/devinross/tapkulibrary
@@ -25,12 +29,19 @@
 
  */
 
-#import "NSDate+TKUAdditions.h"
+#import <UIKit/UIKit.h>
 
-#import "TKUCalendarMonthView.h"
-#import "TKUCalendarMonthViewController.h"
-#import "TKUGlobal.h"
-#import "TKULoadingHUDView.h"
+@interface TKULoadingHUDView : UIView
 
-#import "UIImage+TKUAdditions.h"
-#import "UIView+TKUAdditions.h"
+@property (copy, nonatomic) NSString *title;
+@property (copy, nonatomic) NSString *message;
+@property (assign, nonatomic) float radius;
+
+- (id)initWithTitle:(NSString *)title message:(NSString *)message;
+- (id)initWithTitle:(NSString *)title;
+
+- (void)setProgress:(NSNumber *)progressNumber outOfTotal:(NSNumber *)totalNumber;
+- (void)startAnimating;
+- (void)stopAnimating;
+
+@end

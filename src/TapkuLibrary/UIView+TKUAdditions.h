@@ -1,3 +1,7 @@
+//
+//  UIViewAdditions.h
+//  Created by Devin Ross on 7/25/09.
+//
 /*
 
    tapku.com || http://github.com/devinross/tapkulibrary
@@ -25,12 +29,16 @@
 
  */
 
-#import "NSDate+TKUAdditions.h"
+#import <UIKit/UIKit.h>
 
-#import "TKUCalendarMonthView.h"
-#import "TKUCalendarMonthViewController.h"
-#import "TKUGlobal.h"
-#import "TKULoadingHUDView.h"
+@interface UIView (TKUAdditions)
 
-#import "UIImage+TKUAdditions.h"
-#import "UIView+TKUAdditions.h"
++ (void)drawLinearGradientInRect:(CGRect)rect colors:(CGFloat[])colors;
+
++ (void)drawRoundRectangleInRect:(CGRect)rect withRadius:(CGFloat)radius color:(UIColor *)color;
+
++ (void)drawLineInRect:(CGRect)rect red:(CGFloat)red green:(CGFloat)green blue:(CGFloat)blue alpha:(CGFloat)alpha;
++ (void)drawLineInRect:(CGRect)rect colors:(CGFloat[])colors;
++ (void)drawLineInRect:(CGRect)rect colors:(CGFloat[])colors width:(CGFloat)lineWidth cap:(CGLineCap)cap;
+
+@end

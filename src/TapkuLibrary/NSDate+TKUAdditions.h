@@ -1,3 +1,7 @@
+//
+//  NSDateAdditions.h
+//  Created by Devin Ross on 7/28/09.
+//
 /*
 
    tapku.com || http://github.com/devinross/tapkulibrary
@@ -24,13 +28,37 @@
    OTHER DEALINGS IN THE SOFTWARE.
 
  */
+#import <Foundation/Foundation.h>
 
-#import "NSDate+TKUAdditions.h"
+@interface NSDate (TKUAdditions)
 
-#import "TKUCalendarMonthView.h"
-#import "TKUCalendarMonthViewController.h"
-#import "TKUGlobal.h"
-#import "TKULoadingHUDView.h"
+struct TKUDateInformation {
+    int day;
+    int month;
+    int year;
 
-#import "UIImage+TKUAdditions.h"
-#import "UIView+TKUAdditions.h"
+    int weekday;
+
+    int minute;
+    int hour;
+    int second;
+};
+
+typedef struct TKUDateInformation TKUDateInformation;
+
+@property (readonly, nonatomic) NSString *tk_month;
+@property (readonly, nonatomic) NSString *tk_year;
+@property (readonly, nonatomic) int daysInMonth; // ie. 31, 30 29
+@property (readonly, nonatomic) int weekdayWithMondayFirst;
+@property (readonly, nonatomic) BOOL isToday;
+
++ (NSDate *)dateFromDateInformation:(TKUDateInformation)info;
+
+- (TKUDateInformation)dateInformation;
+
+- (int)differenceInDaysTo:(NSDate *)toDate;
+- (int)differenceInMonthsTo:(NSDate *)toDate;
+
+- (BOOL)isSameDay:(NSDate *)anotherDate;
+
+@end

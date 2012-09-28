@@ -1,3 +1,7 @@
+//
+//  TKGlobal.h
+//  Created by Devin Ross on 7/25/09.
+//
 /*
 
    tapku.com || http://github.com/devinross/tapkulibrary
@@ -25,12 +29,12 @@
 
  */
 
-#import "NSDate+TKUAdditions.h"
+#import <UIKit/UIKit.h>
 
-#import "TKUCalendarMonthView.h"
-#import "TKUCalendarMonthViewController.h"
-#import "TKUGlobal.h"
-#import "TKULoadingHUDView.h"
+#define TKUBUNDLE(_URL) [TKUGlobal fullBundlePath : _URL]
 
-#import "UIImage+TKUAdditions.h"
-#import "UIView+TKUAdditions.h"
+@interface TKUGlobal : NSObject
+
++ (NSString *)fullBundlePath:(NSString *)bundlePath;
+
+@end

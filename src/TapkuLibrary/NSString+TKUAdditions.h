@@ -1,3 +1,7 @@
+//
+//  NSStringAddition.h
+//  Created by Devin Ross on 10/26/09.
+//
 /*
 
    tapku.com || http://github.com/devinross/tapkulibrary
@@ -25,12 +29,8 @@
 
  */
 
-#import "NSDate+TKUAdditions.h"
+@interface NSString (TKUAdditions)
 
-#import "TKUCalendarMonthView.h"
-#import "TKUCalendarMonthViewController.h"
-#import "TKUGlobal.h"
-#import "TKULoadingHUDView.h"
+- (CGSize)heightWithFont:(UIFont *)withFont width:(float)width linebreak:(UILineBreakMode)lineBreakMode;
 
-#import "UIImage+TKUAdditions.h"
-#import "UIView+TKUAdditions.h"
+@end

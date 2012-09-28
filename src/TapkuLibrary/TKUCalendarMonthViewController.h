@@ -1,3 +1,7 @@
+//
+//  DaterViewController.h
+//  Created by Devin Ross on 7/28/09.
+//
 /*
 
    tapku.com || http://github.com/devinross/tapkulibrary
@@ -25,12 +29,11 @@
 
  */
 
-#import "NSDate+TKUAdditions.h"
-
 #import "TKUCalendarMonthView.h"
-#import "TKUCalendarMonthViewController.h"
-#import "TKUGlobal.h"
-#import "TKULoadingHUDView.h"
+#import <UIKit/UIKit.h>
 
-#import "UIImage+TKUAdditions.h"
-#import "UIView+TKUAdditions.h"
+@interface TKUCalendarMonthViewController : UIViewController <TKUCalendarMonthViewDelegate, TKUCalendarMonthViewDataSource>
+
+@property (strong, nonatomic) TKUCalendarMonthView *monthView;
+
+@end

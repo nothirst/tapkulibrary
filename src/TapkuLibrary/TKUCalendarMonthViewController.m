@@ -1,3 +1,7 @@
+//
+//  DaterViewController.m
+//  Created by Devin Ross on 7/28/09.
+//
 /*
 
    tapku.com || http://github.com/devinross/tapkulibrary
@@ -25,12 +29,26 @@
 
  */
 
-#import "NSDate+TKUAdditions.h"
+#import "TKUCalendarMonthViewController.h"
 
 #import "TKUCalendarMonthView.h"
-#import "TKUCalendarMonthViewController.h"
-#import "TKUGlobal.h"
-#import "TKULoadingHUDView.h"
 
-#import "UIImage+TKUAdditions.h"
-#import "UIView+TKUAdditions.h"
+@implementation TKUCalendarMonthViewController
+
+- (void)viewDidLoad
+{
+    [super viewDidLoad];
+
+    self.monthView = [[TKUCalendarMonthView alloc] init];
+    self.monthView.delegate = self;
+    self.monthView.dataSource = self;
+    [self.view addSubview:self.monthView];
+    [self.monthView reload];
+}
+
+- (BOOL)calendarMonthView:(TKUCalendarMonthView *)monthView markForDay:(NSDate *)date
+{
+    return NO;
+}
+
+@end

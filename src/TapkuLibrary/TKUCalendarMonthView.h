@@ -1,3 +1,7 @@
+//
+//  TKCalendarView.h
+//  Created by Devin Ross on 7/28/09.
+//
 /*
 
    tapku.com || http://github.com/devinross/tapkulibrary
@@ -25,12 +29,35 @@
 
  */
 
-#import "NSDate+TKUAdditions.h"
+#import <UIKit/UIKit.h>
 
-#import "TKUCalendarMonthView.h"
-#import "TKUCalendarMonthViewController.h"
-#import "TKUGlobal.h"
-#import "TKULoadingHUDView.h"
+@class TKUMonthGridView, TKUCalendarDayView;
+@protocol TKUCalendarMonthViewDelegate, TKUCalendarMonthViewDataSource;
 
-#import "UIImage+TKUAdditions.h"
-#import "UIView+TKUAdditions.h"
+@interface TKUCalendarMonthView : UIView
+
+@property (unsafe_unretained, readonly, nonatomic) NSDate *monthDate;
+@property (nonatomic, strong) NSDate *selectedDate;
+@property (unsafe_unretained, nonatomic) id <TKUCalendarMonthViewDataSource> dataSource;
+@property (unsafe_unretained, nonatomic) id <TKUCalendarMonthViewDelegate> delegate;
+
+- (void)reload;
+- (void)selectDate:(NSDate *)date;
+
+@end
+
+@protocol TKUCalendarMonthViewDataSource <NSObject>
+
+@required
+- (BOOL)calendarMonthView:(TKUCalendarMonthView *)monthView markForDay:(NSDate *)date;
+
+@end
+
+@protocol TKUCalendarMonthViewDelegate <NSObject>
+
+@optional
+- (void)calendarMonthView:(TKUCalendarMonthView *)monthView dateWasSelected:(NSDate *)date;
+- (void)calendarMonthView:(TKUCalendarMonthView *)monthView monthWillAppear:(NSDate *)month;
+- (void)calendarMonthView:(TKUCalendarMonthView *)monthView monthDidAppear:(NSDate *)month;
+
+@end

@@ -29,7 +29,6 @@
 
  */
 
-#import <UIKit/UIKit.h>
 
 #define TKUBUNDLE(_URL) [TKUGlobal fullBundlePath : _URL]
 

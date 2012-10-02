@@ -30,7 +30,6 @@
  */
 
 #import "TKUCalendarMonthView.h"
-#import <UIKit/UIKit.h>
 
 @interface TKUCalendarMonthViewController : UIViewController <TKUCalendarMonthViewDelegate, TKUCalendarMonthViewDataSource>
 

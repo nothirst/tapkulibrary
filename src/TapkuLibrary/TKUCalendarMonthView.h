@@ -31,8 +31,8 @@
 
 #import <UIKit/UIKit.h>
 
-@class TKUMonthGridView, TKUCalendarDayView;
-@protocol TKUCalendarMonthViewDelegate, TKUCalendarMonthViewDataSource;
+@protocol TKUCalendarMonthViewDelegate;
+@protocol TKUCalendarMonthViewDataSource;
 
 @interface TKUCalendarMonthView : UIView
 

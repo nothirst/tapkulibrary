@@ -67,9 +67,9 @@
 			buildActionMask = 2147483647;
 			files = (
 				AACBBE4A0F95108600F1A2B1 /* Foundation.framework in Frameworks */,
+				3BAC995C10953DF400F235F1 /* UIKit.framework in Frameworks */,
 				3BAC995A10953DF400F235F1 /* SystemConfiguration.framework in Frameworks */,
 				3BAC995B10953DF400F235F1 /* CoreGraphics.framework in Frameworks */,
-				3BAC995C10953DF400F235F1 /* UIKit.framework in Frameworks */,
 				3BAC995D10953DF400F235F1 /* QuartzCore.framework in Frameworks */,
 				3BAC995E10953DF400F235F1 /* MapKit.framework in Frameworks */,
 			);

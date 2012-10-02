@@ -29,7 +29,6 @@
 
  */
 
-#import <UIKit/UIKit.h>
 
 @interface TKULoadingHUDView : UIView
 

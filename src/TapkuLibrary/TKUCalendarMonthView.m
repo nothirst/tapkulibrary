@@ -36,6 +36,8 @@
 #import "UIImage+TKUAdditions.h"
 #import "UIView+TKUAdditions.h"
 
+@class TKUCalendarDayView;
+
 @interface TKUMonthGridView : UIView
 
 @property TKUCalendarDayView *selectedDay;

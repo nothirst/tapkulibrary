@@ -529,8 +529,8 @@
         [[UIColor colorWithRed:75.0 / 255.0 green:92 / 255.0 blue:111 / 255.0 alpha:1] set];
         [self.monthYear drawInRect:r
                      withFont:[UIFont boldSystemFontOfSize:20.0]
-                lineBreakMode:UILineBreakModeWordWrap
-                    alignment:UITextAlignmentCenter];
+                lineBreakMode:NSLineBreakByWordWrapping
+                    alignment:NSTextAlignmentCenter];
     }
 }
 
@@ -563,7 +563,7 @@
 
     int i = 0;
     for (NSString *str in days) {
-        [str drawInRect:CGRectMake(i * 46, 44 - 12, 45, 10) withFont:f lineBreakMode:UILineBreakModeWordWrap alignment:UITextAlignmentCenter];
+        [str drawInRect:CGRectMake(i * 46, 44 - 12, 45, 10) withFont:f lineBreakMode:NSLineBreakByWordWrapping alignment:NSTextAlignmentCenter];
         i++;
     }
     CGContextRestoreGState(context);
@@ -926,8 +926,8 @@
 
     [str drawInRect:CGRectInset(self.bounds, 4, 9)
            withFont:[UIFont boldSystemFontOfSize:22]
-      lineBreakMode:UILineBreakModeWordWrap
-          alignment:UITextAlignmentCenter];
+      lineBreakMode:NSLineBreakByWordWrapping
+          alignment:NSTextAlignmentCenter];
 
     if (marked) {
         CGContextRef context = UIGraphicsGetCurrentContext();

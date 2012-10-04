@@ -82,8 +82,8 @@
     UIFont *titleFont = [UIFont boldSystemFontOfSize:18];
     UIFont *messageFont = [UIFont systemFontOfSize:14];
 
-    CGSize s1 = [self calculateHeightOfTextFromWidth:_title font:titleFont width:200 linebreak:UILineBreakModeTailTruncation];
-    CGSize s2 = [self calculateHeightOfTextFromWidth:_message font:messageFont width:200 linebreak:UILineBreakModeWordWrap];
+    CGSize s1 = [self calculateHeightOfTextFromWidth:_title font:titleFont width:200 linebreak:NSLineBreakByTruncatingTail];
+    CGSize s2 = [self calculateHeightOfTextFromWidth:_message font:messageFont width:200 linebreak:NSLineBreakByWordWrapping];
 
     if ([_title length] < 1) {
         s1.height = 0;
@@ -124,12 +124,12 @@
     } else {
         r = CGRectMake(x + WIDTH_MARGIN, 5 + progressHeight + HEIGHT_MARGIN, width, s1.height);
     }
-    CGSize s = [_title drawInRect:r withFont:titleFont lineBreakMode:UILineBreakModeTailTruncation alignment:UITextAlignmentCenter];
+    CGSize s = [_title drawInRect:r withFont:titleFont lineBreakMode:NSLineBreakByTruncatingTail alignment:NSTextAlignmentCenter];
 
     // DRAW SECOND TEXT
     r.origin.y += s.height + 5;
     r.size.height = s2.height;
-    [_message drawInRect:r withFont:messageFont lineBreakMode:UILineBreakModeWordWrap alignment:UITextAlignmentCenter];
+    [_message drawInRect:r withFont:messageFont lineBreakMode:NSLineBreakByWordWrapping alignment:NSTextAlignmentCenter];
 }
 
 - (void)setProgress:(NSNumber *)progressNumber outOfTotal:(NSNumber *)totalNumber
@@ -202,11 +202,11 @@
 {
     CGSize s1 = [_title heightWithFont:[UIFont boldSystemFontOfSize:16.0]
                                  width:200.0
-                             linebreak:UILineBreakModeTailTruncation];
+                             linebreak:NSLineBreakByTruncatingTail];
 
     CGSize s2 = [_message heightWithFont:[UIFont systemFontOfSize:12.0]
                                    width:200.0
-                               linebreak:UILineBreakModeCharacterWrap];
+                               linebreak:NSLineBreakByCharWrapping];
 
     CGRect r = self.frame;
     r.size.height = s1.height + s2.height + 20;

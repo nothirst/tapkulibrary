@@ -31,7 +31,6 @@
 
 #import "TKUCalendarMonthView.h"
 
-#import "TKUGlobal.h"
 #import "NSDate+TKUAdditions.h"
 #import "UIImage+TKUAdditions.h"
 #import "UIView+TKUAdditions.h"
@@ -102,12 +101,12 @@
 {
     self.left = [UIButton buttonWithType:UIButtonTypeCustom];
     [self.left addTarget:self action:@selector(leftButtonTapped) forControlEvents:UIControlEventTouchUpInside];
-    [self.left setImage:[UIImage imageFromPath:TKUBUNDLE(@"TapkuLibrary.bundle/Images/calendar/leftarrow.png")] forState:0];
+    [self.left setImage:[UIImage imageNamed:@"leftarrow"] forState:0];
     [self addSubview:self.left];
     self.left.frame = CGRectMake(10, 0, 44, 42);
 
     self.right = [UIButton buttonWithType:UIButtonTypeCustom];
-    [self.right setImage:[UIImage imageFromPath:TKUBUNDLE(@"TapkuLibrary.bundle/Images/calendar/rightarrow.png")] forState:0];
+    [self.right setImage:[UIImage imageNamed:@"rightarrow"] forState:0];
     [self.right addTarget:self action:@selector(rightButtonTapped) forControlEvents:UIControlEventTouchUpInside];
     [self addSubview:self.right];
     self.right.frame = CGRectMake(320 - 56, 0, 44, 42);
@@ -376,7 +375,7 @@
         self.scrollView.scrollEnabled = NO;
         self.scrollView.backgroundColor = [UIColor colorWithRed:222 / 255.0 green:222 / 255.0 blue:225 / 255.0 alpha:1];
 
-        self.shadow = [[UIImageView alloc] initWithImage:[UIImage imageFromPath:TKUBUNDLE(@"TapkuLibrary.bundle/Images/calendar/shadow.png")]];
+        self.shadow = [[UIImageView alloc] initWithImage:[UIImage imageNamed:@"shadow"]];
         self.deck = [[NSMutableArray alloc] initWithCapacity:3];
 
         [self addSubview:self.shadow];
@@ -515,7 +514,7 @@
 
 - (void)drawRect:(CGRect)rect
 {
-    [[UIImage imageFromPath:TKUBUNDLE(@"TapkuLibrary.bundle/Images/calendar/topbar.png")] drawAtPoint:CGPointMake(0, 0)];
+    [[UIImage imageNamed:@"topbar"] drawAtPoint:CGPointMake(0, 0)];
 
     [self drawDayLabels:rect];
     [self drawMonthLabel:rect];
@@ -905,19 +904,19 @@
     if (!active) {
         // color = [UIColor colorWithRed:36.0/255.0 green:49/255.0 blue:64/255.0 alpha:1];
         color = [UIColor grayColor];
-        d = [UIImage imageFromPath:TKUBUNDLE(@"TapkuLibrary.bundle/Images/calendar/datecell.png")];
+        d = [UIImage imageNamed:@"datecell"];
     } else if (today && selected) {
         color = [UIColor whiteColor];
-        d = [UIImage imageFromPath:TKUBUNDLE(@"TapkuLibrary.bundle/Images/calendar/todayselected.png")];
+        d = [UIImage imageNamed:@"todayselected"];
     } else if (today) {
         color = [UIColor whiteColor];
-        d = [UIImage imageFromPath:TKUBUNDLE(@"TapkuLibrary.bundle/Images/calendar/today.png")];
+        d = [UIImage imageNamed:@"today"];
     } else if (selected) {
         color = [UIColor whiteColor];
-        d = [UIImage imageFromPath:TKUBUNDLE(@"TapkuLibrary.bundle/Images/calendar/datecellselected.png")];
+        d = [UIImage imageNamed:@"datecellselected"];
     } else {
         color = [UIColor colorWithRed:75.0 / 255.0 green:92 / 255.0 blue:111 / 255.0 alpha:1];
-        d = [UIImage imageFromPath:TKUBUNDLE(@"TapkuLibrary.bundle/Images/calendar/datecell.png")];
+        d = [UIImage imageNamed:@"datecell"];
     }
 
     [d drawAtPoint:CGPointMake(0, 0)];

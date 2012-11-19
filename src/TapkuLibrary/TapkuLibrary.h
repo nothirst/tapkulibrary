@@ -29,7 +29,6 @@
 
 #import "TKUCalendarMonthView.h"
 #import "TKUCalendarMonthViewController.h"
-#import "TKUGlobal.h"
 #import "TKULoadingHUDView.h"
 
 #import "UIImage+TKUAdditions.h"

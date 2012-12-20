@@ -159,138 +159,141 @@
     return array;
 }
 
-- (void)moveCalendarAnimated:(BOOL)animated upwards:(BOOL)up
+- (void)moveCalendarAnimated:(BOOL)animated upwards:(BOOL)isMovingUp
 {
     [self setUserInteractionEnabled:NO];
-    UIView *prev = [self.deck objectAtIndex:0];
-    UIView *current = [self.deck objectAtIndex:1];
-    UIView *next = [self.deck objectAtIndex:2];
+    UIView *previousMonthGridView = [self.deck objectAtIndex:0];
+    UIView *currentMonthGridView = [self.deck objectAtIndex:1];
+    UIView *nextMonthGridView = [self.deck objectAtIndex:2];
 
-    if (!up) {
-        [self.scrollView bringSubviewToFront:prev];
-        [self.scrollView bringSubviewToFront:current];
-        [self.scrollView sendSubviewToBack:next];
+    if (!isMovingUp) {
+        [self.scrollView bringSubviewToFront:previousMonthGridView];
+        [self.scrollView bringSubviewToFront:currentMonthGridView];
+        [self.scrollView sendSubviewToBack:nextMonthGridView];
     } else {
-        [self.scrollView bringSubviewToFront:next];
-        [self.scrollView bringSubviewToFront:current];
-        [self.scrollView sendSubviewToBack:prev];
+        [self.scrollView bringSubviewToFront:nextMonthGridView];
+        [self.scrollView bringSubviewToFront:currentMonthGridView];
+        [self.scrollView sendSubviewToBack:previousMonthGridView];
     }
 
-    NSCalendar *gregorian = [[NSCalendar alloc] initWithCalendarIdentifier:NSGregorianCalendar];
-    NSDateComponents *comp = [gregorian components:(NSYearCalendarUnit | NSMonthCalendarUnit | NSDayCalendarUnit) fromDate:[(TKUMonthGridView *) current dateOfFirst]];
-    [comp setMonth:up ? comp.month + 1:comp.month - 1];
-    NSDate *newDate = [gregorian dateFromComponents:comp];
+    NSCalendar *gregorianCalendar = [[NSCalendar alloc] initWithCalendarIdentifier:NSGregorianCalendar];
+    NSDateComponents *dateComponents = [gregorianCalendar components:(NSYearCalendarUnit | NSMonthCalendarUnit | NSDayCalendarUnit) fromDate:[(TKUMonthGridView *) currentMonthGridView dateOfFirst]];
+    [dateComponents setMonth:isMovingUp ? dateComponents.month + 1:dateComponents.month - 1];
+    NSDate *newDate = [gregorianCalendar dateFromComponents:dateComponents];
 
     [self setMonthYear:[NSString stringWithFormat:@"%@ %@", [newDate tk_month], [newDate tk_year]]];
     [self setSelectedMonth:newDate];
 
-    NSArray *ar = [self getMarksDataWithDate:self.selectedMonth];
+    NSArray *marksForSelectedMonth = [self getMarksDataWithDate:self.selectedMonth];
     int todayNumber = -1;
-    TKUDateInformation info1 = [[NSDate date] dateInformation];
-    TKUDateInformation info2 = [newDate dateInformation];
-    if (info1.month == info2.month && info1.year == info2.year) {
-        todayNumber = info1.day;
+    TKUDateInformation dateInformation1 = [[NSDate date] dateInformation];
+    TKUDateInformation dateInformation2 = [newDate dateInformation];
+    if (dateInformation1.month == dateInformation2.month && dateInformation1.year == dateInformation2.year) {
+        todayNumber = dateInformation1.day;
     }
 
-    NSObject *obj;
-    if (up) {
-        obj = next;
+    NSObject *monthGridView;
+    if (isMovingUp) {
+        monthGridView = nextMonthGridView;
     } else {
-        obj = prev;
+        monthGridView = previousMonthGridView;
     }
 
-    [self.deck removeObject:obj];
+    [self.deck removeObject:monthGridView];
 
-    if ([obj isMemberOfClass:[TKUMonthGridView class]]) {
-        [(TKUMonthGridView *) obj setStartDate:newDate today:todayNumber marks:ar];
+    if ([monthGridView isMemberOfClass:[TKUMonthGridView class]]) {
+        [(TKUMonthGridView *) monthGridView setStartDate:newDate today:todayNumber marks:marksForSelectedMonth];
     } else {
-        obj = [[TKUMonthGridView alloc] initWithStartDate:newDate today:todayNumber marks:ar];
+        monthGridView = [[TKUMonthGridView alloc] initWithStartDate:newDate today:todayNumber marks:marksForSelectedMonth];
     }
 
-    [(TKUMonthGridView *) obj setDelegate:self];
+    [(TKUMonthGridView *) monthGridView setDelegate:self];
 
-    if (up) {
-        next = (TKUMonthGridView *)obj;
-        [self.deck insertObject:obj atIndex:1];
+    if (isMovingUp) {
+        nextMonthGridView = (TKUMonthGridView *)monthGridView;
+        [self.deck insertObject:monthGridView atIndex:1];
     } else {
-        prev = (TKUMonthGridView *)obj;
-        [self.deck insertObject:obj atIndex:0];
+        previousMonthGridView = (TKUMonthGridView *)monthGridView;
+        [self.deck insertObject:monthGridView atIndex:0];
     }
 
-    [self.scrollView addSubview:(UIView *)obj];
-    [self.scrollView sendSubviewToBack:(UIView *)obj];
+    [self.scrollView addSubview:(UIView *)monthGridView];
+    [self.scrollView sendSubviewToBack:(UIView *)monthGridView];
 
-    if (up) {
-        obj = prev;
+    if (isMovingUp) {
+        monthGridView = previousMonthGridView;
     } else {
-        obj = next;
+        monthGridView = nextMonthGridView;
     }
 
-    [self.deck removeObject:obj];
-    [self.deck insertObject:obj atIndex:0];
+    [self.deck removeObject:monthGridView];
+    [self.deck insertObject:monthGridView atIndex:0];
 
-    CGRect r;
-    if (up) {
-        r = next.frame;
-        r.origin.y = [(TKUMonthGridView *) current lines] *  44;
+    CGRect monthGridViewFrame;
+    if (isMovingUp) {
+        monthGridViewFrame = nextMonthGridView.frame;
+        monthGridViewFrame.origin.y = [(TKUMonthGridView *) currentMonthGridView lines] *  44;
     } else {
-        r = prev.frame;
-        r.origin.y = 0 - [(TKUMonthGridView *) prev lines] *  44;
+        monthGridViewFrame = previousMonthGridView.frame;
+        monthGridViewFrame.origin.y = 0 - [(TKUMonthGridView *) previousMonthGridView lines] *  44;
     }
 
-    if (up && [next isMemberOfClass:[TKUMonthGridView class]] &&  [(TKUMonthGridView *) next weekdayOfFirst] == 1) {
-        r.origin.y += 44;
-    } else if (!up && [next isMemberOfClass:[TKUMonthGridView class]] && [(TKUMonthGridView *) current weekdayOfFirst] == 1) {
-        r.origin.y -= 44;
+    if (isMovingUp && [nextMonthGridView isMemberOfClass:[TKUMonthGridView class]] &&  [(TKUMonthGridView *) nextMonthGridView weekdayOfFirst] == 1) {
+        monthGridViewFrame.origin.y += 44;
+    } else if (!isMovingUp && [nextMonthGridView isMemberOfClass:[TKUMonthGridView class]] && [(TKUMonthGridView *) currentMonthGridView weekdayOfFirst] == 1) {
+        monthGridViewFrame.origin.y -= 44;
     }
 
-    float scrol;
-    if (up) {
-        next.frame = r;
-        scrol = next.frame.origin.y;
+    float scrollDistance;
+    if (isMovingUp) {
+        nextMonthGridView.frame = monthGridViewFrame;
+        scrollDistance = nextMonthGridView.frame.origin.y;
     } else {
-        prev.frame = r;
-        scrol = prev.frame.origin.y;
+        previousMonthGridView.frame = monthGridViewFrame;
+        scrollDistance = previousMonthGridView.frame.origin.y;
     }
 
     if (animated) {
         [UIView beginAnimations:nil context:NULL];
-        [UIView setAnimationDuration:.4];
+        [UIView setAnimationDuration:0.4];
         [UIView setAnimationDelegate:self];
         [UIView setAnimationDidStopSelector:@selector(animationStopped:)];
     } else {
         [self performSelector:@selector(animationStopped:) withObject:self];
     }
 
-    for (UIView *m in self.deck) {
-        CGPoint c = m.center;
-        c.y -= scrol;
-        m.center = c;
+    for (UIView *deckMonthGridView in self.deck) {
+        CGPoint center = deckMonthGridView.center;
+        center.y -= scrollDistance;
+        deckMonthGridView.center = center;
     }
-    r = self.scrollView.frame;
-    if (up) {
-        r.size.height = ([(TKUMonthGridView *) next lines] + 1) * 44;
+
+    monthGridViewFrame = self.scrollView.frame;
+    
+    if (isMovingUp) {
+        monthGridViewFrame.size.height = ([(TKUMonthGridView *) nextMonthGridView lines] + 1) * 44;
     } else {
-        r.size.height = ([(TKUMonthGridView *) prev lines] + 1) * 44;
+        monthGridViewFrame.size.height = ([(TKUMonthGridView *) previousMonthGridView lines] + 1) * 44;
     }
-    self.scrollView.frame = r;
+    self.scrollView.frame = monthGridViewFrame;
 
-    CGRect imgrect = self.shadow.frame;
-    imgrect.origin.y = r.size.height - 132;
-    self.shadow.frame = imgrect;
+    CGRect shadowImageFrame = self.shadow.frame;
+    shadowImageFrame.origin.y = monthGridViewFrame.size.height - 132;
+    self.shadow.frame = shadowImageFrame;
 
-    current.alpha = 0;
+    currentMonthGridView.alpha = 0;
+
     if (animated) {
         [UIView commitAnimations];
     }
-    self.frame = CGRectMake(self.frame.origin.x, self.frame.origin.y, self.scrollView.frame.size.width, self.scrollView.frame.size.height + 44);
+    
     [self setNeedsDisplay];
 
     if ([self.delegate respondsToSelector:@selector(calendarMonthView:monthWillAppear:)]) {
-        if (up) {
-            [self.delegate calendarMonthView:self monthWillAppear:[(TKUMonthGridView *) next dateOfFirst]];
+        if (isMovingUp) {
+            [self.delegate calendarMonthView:self monthWillAppear:[(TKUMonthGridView *) nextMonthGridView dateOfFirst]];
         } else {
-            [self.delegate calendarMonthView:self monthWillAppear:[(TKUMonthGridView *) prev dateOfFirst]];
+            [self.delegate calendarMonthView:self monthWillAppear:[(TKUMonthGridView *) previousMonthGridView dateOfFirst]];
         }
     }
 }

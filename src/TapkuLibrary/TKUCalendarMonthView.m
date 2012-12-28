@@ -39,15 +39,15 @@
 
 @interface TKUMonthGridView : UIView
 
-@property TKUCalendarDayView *selectedDay;
-@property int lines;
-@property int todayNumber;
 @property (unsafe_unretained, nonatomic) id delegate;
-@property int weekdayOfFirst;
+@property TKUCalendarDayView *selectedDayView;
+@property NSInteger numberOfLines;
+@property NSInteger todaysDay;
+@property NSInteger weekdayOfFirst;
 @property NSDate *dateOfFirst;
 @property (nonatomic, strong) NSArray *marks;
 @property NSMutableArray *dayTiles;
-@property NSMutableArray *graveYard;
+@property NSMutableArray *reusableDayViews;
 
 - (id)initWithStartDate:(NSDate *)theDate today:(NSInteger)todayDay marks:(NSArray *)marksArray;
 - (void)selectDay:(int)theDayNumber;
@@ -59,39 +59,27 @@
 
 @interface TKUCalendarDayView : UIView
 
+@property (copy, nonatomic) NSString *dayText;
+@property (assign, nonatomic, getter = isSelected) BOOL selected;
+@property (assign, nonatomic, getter = isActive) BOOL active;
+@property (assign, nonatomic, getter = isToday) BOOL today;
+@property (assign, nonatomic, getter = isMarked) BOOL marked;
+
 - (id)initWithFrame:(CGRect)frame string:(NSString *)string selected:(BOOL)sel active:(BOOL)act today:(BOOL)tdy marked:(BOOL)mark;
 - (void)setString:(NSString *)string selected:(BOOL)sel active:(BOOL)act today:(BOOL)tdy marked:(BOOL)mark;
-
-@property (copy, nonatomic) NSString *str;
-@property (assign, nonatomic) BOOL selected;
-@property (assign, nonatomic) BOOL active;
-@property (assign, nonatomic) BOOL today;
-@property (assign, nonatomic) BOOL marked;
 
 @end
 
 @interface TKUCalendarMonthView ()
 
-@property UIButton *left;
-@property UIButton *right;
+@property UIButton *leftButton;
+@property UIButton *rightButton;
 @property UIScrollView *scrollView;
-@property NSDate *currentMonth;
-@property UIImageView *shadow;
+@property NSDate *currentMonthDate;
+@property UIImageView *shadowImageView;
 @property NSMutableArray *deck;
-@property NSDate *selectedMonth;
-@property NSString *monthYear;
-
-- (void)loadButtons;
-- (void)loadInitialGrids;
-- (NSArray *)getMarksDataWithDate:(NSDate *)date;
-- (void)drawMonthLabel:(CGRect)rect;
-- (void)drawDayLabels:(CGRect)rect;
-- (void)moveCalendarMonthsDownAnimated:(BOOL)animated;
-- (void)moveCalendarMonthsUpAnimated:(BOOL)animated;
-- (void)setCurrentMonth:(NSDate *)d;
-- (void)setSelectedMonth:(NSDate *)d;
-- (void)showCalendarMonth:(NSDate *)theD;
-- (void)selectDayInMonth;
+@property NSDate *selectedMonthDate;
+@property NSString *monthYearString;
 
 @end
 
@@ -99,74 +87,71 @@
 
 - (void)loadButtons
 {
-    self.left = [UIButton buttonWithType:UIButtonTypeCustom];
-    [self.left addTarget:self action:@selector(leftButtonTapped) forControlEvents:UIControlEventTouchUpInside];
-    [self.left setImage:[UIImage imageNamed:@"leftarrow"] forState:0];
-    [self addSubview:self.left];
-    self.left.frame = CGRectMake(10, 0, 44, 42);
+    self.leftButton = [UIButton buttonWithType:UIButtonTypeCustom];
+    [self.leftButton addTarget:self action:@selector(leftButtonTapped) forControlEvents:UIControlEventTouchUpInside];
+    [self.leftButton setImage:[UIImage imageNamed:@"leftarrow"] forState:0];
+    [self addSubview:self.leftButton];
+    self.leftButton.frame = CGRectMake(0.0, 0.0, 44.0, 36.0);
 
-    self.right = [UIButton buttonWithType:UIButtonTypeCustom];
-    [self.right setImage:[UIImage imageNamed:@"rightarrow"] forState:0];
-    [self.right addTarget:self action:@selector(rightButtonTapped) forControlEvents:UIControlEventTouchUpInside];
-    [self addSubview:self.right];
-    self.right.frame = CGRectMake(320 - 56, 0, 44, 42);
+    self.rightButton = [UIButton buttonWithType:UIButtonTypeCustom];
+    [self.rightButton setImage:[UIImage imageNamed:@"rightarrow"] forState:0];
+    [self.rightButton addTarget:self action:@selector(rightButtonTapped) forControlEvents:UIControlEventTouchUpInside];
+    [self addSubview:self.rightButton];
+    self.rightButton.frame = CGRectMake(320.0 - 44.0, 0.0, 44.0, 36.0);
 }
 
 - (void)loadInitialGrids
 {
-    NSArray *ar = [self getMarksDataWithDate:self.currentMonth];
+    NSArray *marks = [self getMarksDataWithDate:self.currentMonthDate];
 
-    TKUMonthGridView *currentGrid = [[TKUMonthGridView alloc] initWithStartDate:self.currentMonth
-                                                                        today:[[NSDate date] dateInformation].day
-                                                                        marks:ar];
+    TKUMonthGridView *currentMonthGridView = [[TKUMonthGridView alloc] initWithStartDate:self.currentMonthDate today:[[NSDate date] dateInformation].day marks:marks];
+    [currentMonthGridView setDelegate:self];
 
-    [currentGrid setDelegate:self];
+    CGRect scrollViewFrame = self.scrollView.frame;
+    scrollViewFrame.size.height = (currentMonthGridView.numberOfLines + 1) * 38.0;
+    self.scrollView.frame = scrollViewFrame;
 
-    CGRect r = self.scrollView.frame;
-    r.size.height = (currentGrid.lines + 1) * 44;
-    self.scrollView.frame = r;
+    self.frame = CGRectMake(self.frame.origin.x, self.frame.origin.y, self.scrollView.frame.size.width, self.scrollView.frame.size.height + [[UIImage imageNamed:@"topbar"] size].height + self.shadowImageView.frame.size.height);
 
-    self.frame = CGRectMake(self.frame.origin.x, self.frame.origin.y, self.scrollView.frame.size.width, self.scrollView.frame.size.height  + 44);
+    CGRect shadowFrame = self.shadowImageView.frame;
+    shadowFrame.origin.y = scrollViewFrame.origin.y + scrollViewFrame.size.height;// + shadowFrame.size.height;
+//    shadowFrame.origin.y = self.frame.size.height - shadowFrame.size.height;
+    self.shadowImageView.frame = shadowFrame;
 
-    CGRect imgrect = self.shadow.frame;
-    imgrect.origin.y = r.size.height - 132;
-    self.shadow.frame = imgrect;
-
-    UIView *next = [[UIView alloc] initWithFrame:CGRectMake(0, currentGrid.lines * 44, 320, 20)];
-    UIView *prev = [[UIView alloc] initWithFrame:CGRectMake(0, -20, 320, 20)];
-    [self.scrollView addSubview:currentGrid];
-    [self.deck addObjectsFromArray:[NSArray arrayWithObjects:prev, currentGrid, next, nil]];
+    UIView *nextMonthView = [[UIView alloc] initWithFrame:CGRectMake(0.0, currentMonthGridView.numberOfLines * 38.0, 320.0, 20.0)];
+    UIView *previousMonthView = [[UIView alloc] initWithFrame:CGRectMake(0.0, -20.0, 320.0, 20.0)];
+    [self.scrollView addSubview:currentMonthGridView];
+    [self.deck addObjectsFromArray:@[previousMonthView, currentMonthGridView, nextMonthView]];
 }
 
 - (NSArray *)getMarksDataWithDate:(NSDate *)date
 {
-    int days = [date daysInMonth];
+    NSInteger days = [date daysInMonth];
 
-    TKUDateInformation info = [date dateInformation];
+    TKUDateInformation dateInformation = [date dateInformation];
 
-    NSMutableArray *ar = [[NSMutableArray alloc] initWithCapacity:days];
-    for (int i = 1; i <= days; i++) {
-        info.day = i;
+    NSMutableArray *daysArray = [[NSMutableArray alloc] initWithCapacity:days];
+    for (NSInteger i = 1; i <= days; i++) {
+        dateInformation.day = i;
         if (self.dataSource != nil) {
-            [ar addObject:[NSNumber numberWithBool:[self.dataSource calendarMonthView:self markForDay:[NSDate dateFromDateInformation:info]]]];
+            [daysArray addObject:[NSNumber numberWithBool:[self.dataSource calendarMonthView:self markForDay:[NSDate dateFromDateInformation:dateInformation]]]];
         } else {
-            [ar addObject:[NSNumber numberWithBool:NO]];
+            [daysArray addObject:[NSNumber numberWithBool:NO]];
         }
     }
 
-    NSArray *array = [NSArray arrayWithArray:ar];
-
-    return array;
+    return daysArray;
 }
 
 - (void)moveCalendarAnimated:(BOOL)animated upwards:(BOOL)isMovingUp
 {
-    [self setUserInteractionEnabled:NO];
+    self.userInteractionEnabled = NO;
+
     UIView *previousMonthGridView = [self.deck objectAtIndex:0];
     UIView *currentMonthGridView = [self.deck objectAtIndex:1];
     UIView *nextMonthGridView = [self.deck objectAtIndex:2];
 
-    if (!isMovingUp) {
+    if (isMovingUp == NO) {
         [self.scrollView bringSubviewToFront:previousMonthGridView];
         [self.scrollView bringSubviewToFront:currentMonthGridView];
         [self.scrollView sendSubviewToBack:nextMonthGridView];
@@ -178,14 +163,14 @@
 
     NSCalendar *gregorianCalendar = [[NSCalendar alloc] initWithCalendarIdentifier:NSGregorianCalendar];
     NSDateComponents *dateComponents = [gregorianCalendar components:(NSYearCalendarUnit | NSMonthCalendarUnit | NSDayCalendarUnit) fromDate:[(TKUMonthGridView *) currentMonthGridView dateOfFirst]];
-    [dateComponents setMonth:isMovingUp ? dateComponents.month + 1:dateComponents.month - 1];
+    [dateComponents setMonth:isMovingUp ? dateComponents.month + 1 : dateComponents.month - 1];
     NSDate *newDate = [gregorianCalendar dateFromComponents:dateComponents];
 
-    [self setMonthYear:[NSString stringWithFormat:@"%@ %@", [newDate tk_month], [newDate tk_year]]];
-    [self setSelectedMonth:newDate];
+    self.monthYearString = [NSString stringWithFormat:@"%@ %@", [newDate tk_month], [newDate tk_year]];
+    self.selectedMonthDate = newDate;
 
-    NSArray *marksForSelectedMonth = [self getMarksDataWithDate:self.selectedMonth];
-    int todayNumber = -1;
+    NSArray *marksForSelectedMonth = [self getMarksDataWithDate:self.selectedMonthDate];
+    NSInteger todayNumber = -1;
     TKUDateInformation dateInformation1 = [[NSDate date] dateInformation];
     TKUDateInformation dateInformation2 = [newDate dateInformation];
     if (dateInformation1.month == dateInformation2.month && dateInformation1.year == dateInformation2.year) {
@@ -202,12 +187,12 @@
     [self.deck removeObject:monthGridView];
 
     if ([monthGridView isMemberOfClass:[TKUMonthGridView class]]) {
-        [(TKUMonthGridView *) monthGridView setStartDate:newDate today:todayNumber marks:marksForSelectedMonth];
+        [(TKUMonthGridView *)monthGridView setStartDate:newDate today:todayNumber marks:marksForSelectedMonth];
     } else {
         monthGridView = [[TKUMonthGridView alloc] initWithStartDate:newDate today:todayNumber marks:marksForSelectedMonth];
     }
 
-    [(TKUMonthGridView *) monthGridView setDelegate:self];
+    [(TKUMonthGridView *)monthGridView setDelegate:self];
 
     if (isMovingUp) {
         nextMonthGridView = (TKUMonthGridView *)monthGridView;
@@ -232,16 +217,16 @@
     CGRect monthGridViewFrame;
     if (isMovingUp) {
         monthGridViewFrame = nextMonthGridView.frame;
-        monthGridViewFrame.origin.y = [(TKUMonthGridView *) currentMonthGridView lines] *  44;
+        monthGridViewFrame.origin.y = [(TKUMonthGridView *)currentMonthGridView numberOfLines] * 38.0;
     } else {
         monthGridViewFrame = previousMonthGridView.frame;
-        monthGridViewFrame.origin.y = 0 - [(TKUMonthGridView *) previousMonthGridView lines] *  44;
+        monthGridViewFrame.origin.y = 0 - [(TKUMonthGridView *)previousMonthGridView numberOfLines] * 38.0;
     }
 
     if (isMovingUp && [nextMonthGridView isMemberOfClass:[TKUMonthGridView class]] &&  [(TKUMonthGridView *) nextMonthGridView weekdayOfFirst] == 1) {
-        monthGridViewFrame.origin.y += 44;
+        monthGridViewFrame.origin.y += 38.0;
     } else if (!isMovingUp && [nextMonthGridView isMemberOfClass:[TKUMonthGridView class]] && [(TKUMonthGridView *) currentMonthGridView weekdayOfFirst] == 1) {
-        monthGridViewFrame.origin.y -= 44;
+        monthGridViewFrame.origin.y -= 38.0;
     }
 
     float scrollDistance;
@@ -271,15 +256,15 @@
     monthGridViewFrame = self.scrollView.frame;
     
     if (isMovingUp) {
-        monthGridViewFrame.size.height = ([(TKUMonthGridView *) nextMonthGridView lines] + 1) * 44;
+        monthGridViewFrame.size.height = ([(TKUMonthGridView *) nextMonthGridView numberOfLines] + 1) * 38.0;
     } else {
-        monthGridViewFrame.size.height = ([(TKUMonthGridView *) previousMonthGridView lines] + 1) * 44;
+        monthGridViewFrame.size.height = ([(TKUMonthGridView *) previousMonthGridView numberOfLines] + 1) * 38.0;
     }
     self.scrollView.frame = monthGridViewFrame;
 
-    CGRect shadowImageFrame = self.shadow.frame;
-    shadowImageFrame.origin.y = monthGridViewFrame.size.height - 132;
-    self.shadow.frame = shadowImageFrame;
+    CGRect shadowImageViewFrame = self.shadowImageView.frame;
+    shadowImageViewFrame.origin.y = monthGridViewFrame.origin.y + monthGridViewFrame.size.height;// + shadowImageViewFrame.size.height;
+    self.shadowImageView.frame = shadowImageViewFrame;
 
     currentMonthGridView.alpha = 0;
 
@@ -311,7 +296,7 @@
 - (void)animationStopped:(id)sender
 {
     if ([self.delegate respondsToSelector:@selector(calendarMonthView:monthDidAppear:)]) {
-        [self.delegate calendarMonthView:self monthDidAppear:self.currentMonth];
+        [self.delegate calendarMonthView:self monthDidAppear:self.currentMonthDate];
     }
 
     [self.scrollView bringSubviewToFront:[self.deck objectAtIndex:1]];
@@ -323,135 +308,142 @@
     [self setUserInteractionEnabled:YES];
 }
 
-- (void)showCalendarMonth:(NSDate *)theD
+- (void)showCalendarMonth:(NSDate *)monthDate
 {
-    TKUMonthGridView *current = [self.deck objectAtIndex:1];
+    TKUMonthGridView *currentMonthGridView = [self.deck objectAtIndex:1];
 
-    [self setMonthYear:[NSString stringWithFormat:@"%@ %@", [theD tk_month], [theD tk_year]]];
-    [self setSelectedMonth:theD];
+    self.monthYearString = [NSString stringWithFormat:@"%@ %@", [monthDate tk_month], [monthDate tk_year]];
+    self.selectedMonthDate = monthDate;
 
-    NSArray *ar = [self getMarksDataWithDate:self.selectedMonth];
-    int todayNumber = -1;
-    TKUDateInformation info1 = [[NSDate date] dateInformation];
-    TKUDateInformation info2 = [theD dateInformation];
-    if (info1.month == info2.month && info1.year == info2.year) {
-        todayNumber = info1.day;
+    NSArray *marks = [self getMarksDataWithDate:self.selectedMonthDate];
+    NSInteger todayNumber = -1;
+    TKUDateInformation todayDateInformation = [[NSDate date] dateInformation];
+    TKUDateInformation monthDateInformation = [monthDate dateInformation];
+    if (todayDateInformation.month == monthDateInformation.month && todayDateInformation.year == monthDateInformation.year) {
+        todayNumber = todayDateInformation.day;
     }
 
-    [current setStartDate:theD today:todayNumber marks:ar];
+    [currentMonthGridView setStartDate:monthDate today:todayNumber marks:marks];
 
-    CGRect r = self.scrollView.frame;
-    r.size.height = ([(TKUMonthGridView *) current lines] + 1) * 44;
-    self.scrollView.frame = r;
+    CGRect scrollViewFrame = self.scrollView.frame;
+    scrollViewFrame.size.height = ([(TKUMonthGridView *) currentMonthGridView numberOfLines] + 1) * 38.0;
+    self.scrollView.frame = scrollViewFrame;
 
-    CGRect imgrect = self.shadow.frame;
-    imgrect.origin.y = r.size.height - 132;
-    self.shadow.frame = imgrect;
+    CGRect shadowImageViewFrame = self.shadowImageView.frame;
+    shadowImageViewFrame.origin.y = scrollViewFrame.origin.y + scrollViewFrame.size.height;// + shadowImageViewFrame.size.height;
+    self.shadowImageView.frame = shadowImageViewFrame;
 
-    self.frame = CGRectMake(self.frame.origin.x, self.frame.origin.y, self.scrollView.frame.size.width, self.scrollView.frame.size.height + 44);
+    self.frame = CGRectMake(self.frame.origin.x, self.frame.origin.y, self.scrollView.frame.size.width, self.scrollView.frame.size.height + [[UIImage imageNamed:@"topbar"] size].height + self.shadowImageView.frame.size.height);
 
     [self setNeedsDisplay];
 
     if ([self.delegate respondsToSelector:@selector(calendarMonthView:monthWillAppear:)]) {
-        [self.delegate calendarMonthView:self monthWillAppear:[current dateOfFirst]];
+        [self.delegate calendarMonthView:self monthWillAppear:[currentMonthGridView dateOfFirst]];
     }
 }
 
 - (id)init
 {
-    if (self = [super initWithFrame:CGRectMake(0, 0, 320, 400)]) {
-        self.backgroundColor = [UIColor clearColor];
-
-        TKUDateInformation info = [[NSDate date] dateInformation];
-        info.second = info.minute = info.hour = 0;
-        info.day = 1;
-        [self setCurrentMonth:[NSDate dateFromDateInformation:info]];
-
-        self.monthYear = [[NSString stringWithFormat:@"%@ %@", [self.currentMonth tk_month], [self.currentMonth tk_year]] copy];
-        [self setSelectedMonth:self.currentMonth];
-
-        [self loadButtons];
-
-        self.scrollView = [[UIScrollView alloc] initWithFrame:CGRectMake(0, 44, 320, 460 - 44)];
-        self.scrollView.contentSize = CGSizeMake(320, 260);
-        [self addSubview:self.scrollView];
-        self.scrollView.scrollEnabled = NO;
-        self.scrollView.backgroundColor = [UIColor colorWithRed:222 / 255.0 green:222 / 255.0 blue:225 / 255.0 alpha:1];
-
-        self.shadow = [[UIImageView alloc] initWithImage:[UIImage imageNamed:@"shadow"]];
-        self.deck = [[NSMutableArray alloc] initWithCapacity:3];
-
-        [self addSubview:self.shadow];
-        [self loadInitialGrids];
+    self = [super initWithFrame:CGRectMake(0, 0, 320, 400)];
+    if (self == nil) {
+        return nil;
     }
+
+    self.backgroundColor = [UIColor clearColor];
+    
+    TKUDateInformation todayDateInformation = [[NSDate date] dateInformation];
+    todayDateInformation.second = todayDateInformation.minute = todayDateInformation.hour = 0;
+    todayDateInformation.day = 1;
+    self.currentMonthDate = [NSDate dateFromDateInformation:todayDateInformation];
+    
+    self.monthYearString = [[NSString stringWithFormat:@"%@ %@", [self.currentMonthDate tk_month], [self.currentMonthDate tk_year]] copy];
+    self.selectedMonthDate = self.currentMonthDate;
+    
+    [self loadButtons];
+    
+    self.scrollView = [[UIScrollView alloc] initWithFrame:CGRectMake(0, [[UIImage imageNamed:@"topbar"] size].height, 320.0, 460.0 - [[UIImage imageNamed:@"topbar"] size].height)];
+    self.scrollView.contentSize = CGSizeMake(320, 260);
+    [self addSubview:self.scrollView];
+    self.scrollView.scrollEnabled = NO;
+    self.scrollView.backgroundColor = [UIColor colorWithRed:251.0 / 255.0 green:251.0 / 255.0 blue:251.0 / 255.0 alpha:1.0];
+    
+    self.shadowImageView = [[UIImageView alloc] initWithImage:[UIImage imageNamed:@"shadow"]];
+    [self addSubview:self.shadowImageView];
+    
+    self.deck = [[NSMutableArray alloc] initWithCapacity:3];
+    [self loadInitialGrids];
+    
     return self;
 }
 
 - (void)reload
 {
     if (self.deck && self.deck.count > 1) {
-        TKUMonthGridView *current = [self.deck objectAtIndex:1];
-        current.marks = [self getMarksDataWithDate:current.dateOfFirst];
-        [current resetMarks];
+        TKUMonthGridView *currentMonthGridView = [self.deck objectAtIndex:1];
+        currentMonthGridView.marks = [self getMarksDataWithDate:currentMonthGridView.dateOfFirst];
+        [currentMonthGridView resetMarks];
     }
 }
 
 - (void)selectDate:(NSDate *)date
 {
-    [self setSelectedDate:date];
+    self.selectedDate = date;
+
     if (self.deck && self.deck.count > 1) {
         // Get the new month view
-        TKUMonthGridView *current = [self.deck objectAtIndex:1];
+        TKUMonthGridView *currentMonthGridView = [self.deck objectAtIndex:1];
 
-        TKUDateInformation info1 = [date dateInformation];
-        info1.hour = info1.minute = info1.second = 0;
+        TKUDateInformation dateInformation = [date dateInformation];
+        dateInformation.hour = dateInformation.minute = dateInformation.second = 0;
 
-        TKUDateInformation info2 = [current.dateOfFirst dateInformation];
-        info2.hour = info2.minute = info2.second = 0;
+        TKUDateInformation currentDateOfFirstDateInformation = [currentMonthGridView.dateOfFirst dateInformation];
+        currentDateOfFirstDateInformation.hour = currentDateOfFirstDateInformation.minute = currentDateOfFirstDateInformation.second = 0;
 
-        NSInteger difference = [[NSDate dateFromDateInformation:info1] differenceInMonthsTo:[NSDate dateFromDateInformation:info2]];
+        NSInteger difference = [[NSDate dateFromDateInformation:dateInformation] differenceInMonthsTo:[NSDate dateFromDateInformation:currentDateOfFirstDateInformation]];
         if (difference == 0) {
             // Month is already selected
             // Do nothing
         } else if (difference < 0) {
             // Going up
             if (difference == -1) {
-                [self moveCalendarMonthsUpAnimated:FALSE];
+                [self moveCalendarMonthsUpAnimated:NO];
             } else {
                 [self showCalendarMonth:date];
             }
         } else {
             // Going down
             if (difference == 1) {
-                [self moveCalendarMonthsDownAnimated:FALSE];
+                [self moveCalendarMonthsDownAnimated:NO];
             } else {
                 [self showCalendarMonth:date];
             }
         }
-        current = [self.deck objectAtIndex:1];
+        currentMonthGridView = [self.deck objectAtIndex:1];
+
         // Select Date
-        [current selectDay:info1.day];
+        [currentMonthGridView selectDay:dateInformation.day];
     }
 }
 
 - (NSDate *)monthDate
 {
-    return self.currentMonth;
+    return self.currentMonthDate;
 }
 
 #pragma mark MONTH VIEW DELEGATE METHODS
 
 - (void)previousMonthDayWasSelected:(NSString *)day
 {
-    [self moveCalendarMonthsDownAnimated:TRUE];
-    [[self.deck objectAtIndex:1] selectDay:day.intValue];
+    [self moveCalendarMonthsDownAnimated:YES];
+    [[self.deck objectAtIndex:1] selectDay:[day integerValue]];
 
-    TKUMonthGridView *calendarMonth = [self.deck objectAtIndex:1];
-    NSDate *date = calendarMonth.dateOfFirst;
-    TKUDateInformation info = [date dateInformation];
-    info.day = day.intValue;
+    TKUMonthGridView *currentMonthGridView = [self.deck objectAtIndex:1];
+    NSDate *dateOfFirst = currentMonthGridView.dateOfFirst;
+    TKUDateInformation dateOfFirstDateInformation = [dateOfFirst dateInformation];
+    dateOfFirstDateInformation.day = day.integerValue;
 
-    [self setSelectedDate:[NSDate dateFromDateInformation:info]];
+    self.selectedDate = [NSDate dateFromDateInformation:dateOfFirstDateInformation];
+
     if ([self.delegate respondsToSelector:@selector(calendarMonthView:dateWasSelected:)]) {
         [self.delegate calendarMonthView:self dateWasSelected:[self selectedDate]];
     }
@@ -459,15 +451,16 @@
 
 - (void)nextMonthDayWasSelected:(NSString *)day
 {
-    [self moveCalendarMonthsUpAnimated:TRUE];
-    [[self.deck objectAtIndex:1] selectDay:day.intValue];
+    [self moveCalendarMonthsUpAnimated:YES];
+    [[self.deck objectAtIndex:1] selectDay:[day integerValue]];
 
-    TKUMonthGridView *calendarMonth = [self.deck objectAtIndex:1];
-    NSDate *date = calendarMonth.dateOfFirst;
-    TKUDateInformation info = [date dateInformation];
-    info.day = day.intValue;
+    TKUMonthGridView *currentMonthGridView = [self.deck objectAtIndex:1];
+    NSDate *dateOfFirst = currentMonthGridView.dateOfFirst;
+    TKUDateInformation dateOfFirstDateInformation = [dateOfFirst dateInformation];
+    dateOfFirstDateInformation.day = day.integerValue;
 
-    [self setSelectedDate:[NSDate dateFromDateInformation:info]];
+    self.selectedDate = [NSDate dateFromDateInformation:dateOfFirstDateInformation];
+
     if ([self.delegate respondsToSelector:@selector(calendarMonthView:dateWasSelected:)]) {
         [self.delegate calendarMonthView:self dateWasSelected:[self selectedDate]];
     }
@@ -475,13 +468,14 @@
 
 - (void)dateWasSelected:(NSArray *)array
 {
-    TKUMonthGridView *calendarMonth = [array objectAtIndex:0];
+    TKUMonthGridView *monthGridView = [array objectAtIndex:0];
     NSString *dayNumber = [array objectAtIndex:1];
-    NSDate *date = calendarMonth.dateOfFirst;
-    TKUDateInformation info = [date dateInformation];
-    info.day = dayNumber.intValue;
+    NSDate *dateOfFirst = monthGridView.dateOfFirst;
+    TKUDateInformation dateOfFirstDateInformation = [dateOfFirst dateInformation];
+    dateOfFirstDateInformation.day = dayNumber.integerValue;
 
-    [self setSelectedDate:[NSDate dateFromDateInformation:info]];
+    self.selectedDate = [NSDate dateFromDateInformation:dateOfFirstDateInformation];
+
     if ([self.delegate respondsToSelector:@selector(calendarMonthView:dateWasSelected:)]) {
         [self.delegate calendarMonthView:self dateWasSelected:[self selectedDate]];
     }
@@ -491,27 +485,27 @@
 
 - (void)leftButtonTapped
 {
-    [self moveCalendarMonthsDownAnimated:TRUE];
+    [self moveCalendarMonthsDownAnimated:YES];
     [self selectDayInMonth];
 }
 
 - (void)rightButtonTapped
 {
-    [self moveCalendarMonthsUpAnimated:TRUE];
+    [self moveCalendarMonthsUpAnimated:YES];
     [self selectDayInMonth];
 }
 
 - (void)selectDayInMonth
 {
-    TKUDateInformation info1 = [[self selectedDate] dateInformation];
-    info1.hour = info1.minute = info1.second = 0;
+    TKUDateInformation selectedDateInformation = [self.selectedDate dateInformation];
+    selectedDateInformation.hour = selectedDateInformation.minute = selectedDateInformation.second = 0;
 
-    TKUDateInformation info2 = [self.selectedMonth dateInformation];
-    info2.hour = info2.minute = info2.second = 0;
+    TKUDateInformation selectedMonthDateInformation = [self.selectedMonthDate dateInformation];
+    selectedMonthDateInformation.hour = selectedMonthDateInformation.minute = selectedMonthDateInformation.second = 0;
 
-    NSInteger difference = [[NSDate dateFromDateInformation:info1] differenceInMonthsTo:[NSDate dateFromDateInformation:info2]];
+    NSInteger difference = [[NSDate dateFromDateInformation:selectedDateInformation] differenceInMonthsTo:[NSDate dateFromDateInformation:selectedMonthDateInformation]];
     if (difference == 0) {
-        [[self.deck objectAtIndex:1] selectDay:info1.day];
+        [[self.deck objectAtIndex:1] selectDay:selectedDateInformation.day];
     }
 }
 
@@ -523,17 +517,25 @@
     [self drawMonthLabel:rect];
 }
 
-- (void)drawMonthLabel:(CGRect)rect
+- (void)drawMonthLabel:(CGRect)dirtyRect
 {
-    if (self.monthYear != nil) {
-        CGRect r = CGRectMake(0, 8, 320, 44);
-        r.size.height = 42;
-        [[UIColor colorWithRed:75.0 / 255.0 green:92 / 255.0 blue:111 / 255.0 alpha:1] set];
-        [self.monthYear drawInRect:r
-                     withFont:[UIFont boldSystemFontOfSize:20.0]
-                lineBreakMode:NSLineBreakByWordWrapping
-                    alignment:NSTextAlignmentCenter];
+    if (self.monthYearString == nil) {
+        return;
     }
+
+    CGFloat height = 38.0;
+    CGFloat width = dirtyRect.size.width;
+
+    UIFont *font = [UIFont boldSystemFontOfSize:20.0];
+    CGSize size = [self.monthYearString sizeWithFont:font];
+    CGFloat x = ((width - size.width) / 2);
+    CGFloat y = ((height - size.height) / 2);
+
+    [[UIColor colorWithWhite:1.0 alpha:0.6] set];
+    [self.monthYearString drawAtPoint:CGPointMake(x, y + 1) forWidth:size.width withFont:font lineBreakMode:NSLineBreakByTruncatingTail];
+
+    [[UIColor colorWithRed:82.0 / 255.0 green:82.0 / 255.0 blue:82.0 / 255.0 alpha:1.0] set];
+    [self.monthYearString drawAtPoint:CGPointMake(x, y) forWidth:size.width withFont:font lineBreakMode:NSLineBreakByTruncatingTail];
 }
 
 - (void)drawDayLabels:(CGRect)rect
@@ -556,18 +558,18 @@
     }
     CFRelease(currentCalendar);
 
-    UIFont *f = [UIFont boldSystemFontOfSize:10];
-    [[UIColor darkGrayColor] set];
+    UIFont *font = [UIFont boldSystemFontOfSize:10];
+    [[UIColor colorWithRed:153.0 / 255.0 green:153.0 / 255.0 blue:153.0 / 255.0 alpha:1.0] set];
 
     CGContextRef context = UIGraphicsGetCurrentContext();
     CGContextSaveGState(context);
-    CGContextSetShadowWithColor(context,  CGSizeMake(0.0, -1.0), 0.5, [[UIColor whiteColor] CGColor]);
 
-    int i = 0;
-    for (NSString *str in days) {
-        [str drawInRect:CGRectMake(i * 46, 44 - 12, 45, 10) withFont:f lineBreakMode:NSLineBreakByWordWrapping alignment:NSTextAlignmentCenter];
+    NSInteger i = 0;
+    for (NSString *day in days) {
+        [day drawInRect:CGRectMake(i * 46.0, 39.0, 45.0, 19.0) withFont:font lineBreakMode:NSLineBreakByWordWrapping alignment:NSTextAlignmentCenter];
         i++;
     }
+
     CGContextRestoreGState(context);
 }
 
@@ -577,70 +579,77 @@
 
 - (int)daysInPreviousMonth
 {
-    NSCalendar *gregorian = [[NSCalendar alloc] initWithCalendarIdentifier:NSGregorianCalendar];
-    NSDateComponents *comp = [gregorian components:(NSYearCalendarUnit | NSMonthCalendarUnit) fromDate:self.dateOfFirst];
-    [comp setDay:1];
-    [comp setMonth:comp.month - 1];
-    int daysInPreviousMonth = [[gregorian dateFromComponents:comp] daysInMonth];
-    return daysInPreviousMonth;
+    NSCalendar *gregorianCalendar = [[NSCalendar alloc] initWithCalendarIdentifier:NSGregorianCalendar];
+    NSDateComponents *dateComponents = [gregorianCalendar components:(NSYearCalendarUnit | NSMonthCalendarUnit) fromDate:self.dateOfFirst];
+    [dateComponents setDay:1];
+    [dateComponents setMonth:dateComponents.month - 1];
+
+    return [[gregorianCalendar dateFromComponents:dateComponents] daysInMonth];
 }
 
-- (id)initWithStartDate:(NSDate *)theDate today:(NSInteger)todayDay marks:(NSArray *)marksArray
+- (id)initWithStartDate:(NSDate *)startDate today:(NSInteger)todayDay marks:(NSArray *)marksArray
 {
-    if (self = [self initWithFrame:CGRectMake(0, 0, 320, 320)]) {
-        [self setStartDate:theDate today:todayDay marks:marksArray];
-        self.backgroundColor = [UIColor clearColor];
+    self = [self initWithFrame:CGRectMake(0, 0, 320, 320)];
+    if (self == nil) {
+        return nil;
     }
-    return self;
-}
 
-- (void)drawRect:(CGRect)rect
-{
-    // Drawing code
+    [self setStartDate:startDate today:todayDay marks:marksArray];
+    self.backgroundColor = [UIColor colorWithRed:251.0/255.0 green:251.0/255.0 blue:251.0/255.0 alpha:1.0];
+
+    return self;
 }
 
 - (void)buildGrid
 {
     self.dayTiles = [[NSMutableArray alloc] init];
 
-    int position = self.weekdayOfFirst;
-    int line = 0;
+    NSInteger position = self.weekdayOfFirst;
+    NSInteger line = 0;
 
-    int daysInPreviousMonth = [self daysInPreviousMonth];
-    int daysInMonth = [self.dateOfFirst daysInMonth];
-    int lead = daysInPreviousMonth - (position - 2);
+    NSInteger daysInPreviousMonth = [self daysInPreviousMonth];
+    NSInteger daysInMonth = [self.dateOfFirst daysInMonth];
+    NSInteger lead = daysInPreviousMonth - (position - 2);
 
-    for (int i = 1; i < position; i++) {
-        TKUCalendarDayView *dayView = [[TKUCalendarDayView alloc] initWithFrame:CGRectMake((i - 1) * 46 - 1, 0, 47, 45)];
-        [dayView setActive:NO];
-        dayView.str = [NSString stringWithFormat:@"%d", lead];
+    for (NSInteger i = 1; i < position; i++) {
+        CGFloat x = (i - 1) * 46.0 - 1;
+        CGFloat y = 0.0;
+        CGFloat width = 46.0;
+        CGFloat height = 38.0;
+        TKUCalendarDayView *dayView = [[TKUCalendarDayView alloc] initWithFrame:CGRectMake(x, y, width, height)];
+        dayView.active = NO;
+        dayView.dayText = [NSString stringWithFormat:@"%d", lead];
+        
+        UITapGestureRecognizer *tapGestureRecognizer = [[UITapGestureRecognizer alloc] initWithTarget:self action:@selector(dayTapped:)];
+        [dayView addGestureRecognizer:tapGestureRecognizer];
+
         [self addSubview:dayView];
         [self.dayTiles addObject:dayView];
         lead++;
     }
 
     BOOL isCurrentMonth = NO;
-    if (self.todayNumber > 0) {
+    if (self.todaysDay > 0) {
         isCurrentMonth = YES;
     }
 
-    for (int i = 1; i <= daysInMonth; i++) {
-        TKUCalendarDayView *dayView = [[TKUCalendarDayView alloc] initWithFrame:CGRectMake((position - 1) * 46 - 1, line * 44, 47, 45)];
+    for (NSInteger i = 1; i <= daysInMonth; i++) {
+        CGFloat x = (position - 1) * 46.0 - 1;
+        CGFloat y = line * 38.0;
+        CGFloat width = 46.0;
+        CGFloat height = 38.0;
+        TKUCalendarDayView *dayView = [[TKUCalendarDayView alloc] initWithFrame:CGRectMake(x, y, width, height)];
+        dayView.marked = [[self.marks objectAtIndex:i - 1] boolValue];
+        dayView.today = (isCurrentMonth && i == self.todaysDay);
+        dayView.dayText = [NSString stringWithFormat:@"%d", i];
 
-        [dayView setMarked:[[self.marks objectAtIndex:i - 1] boolValue]];
-
-        if (isCurrentMonth && i == self.todayNumber) {
-            [dayView setToday:YES];
-        } else {
-            [dayView setToday:NO];
-        }
-
-        dayView.str = [NSString stringWithFormat:@"%d", i];
+        UITapGestureRecognizer *tapGestureRecognizer = [[UITapGestureRecognizer alloc] initWithTarget:self action:@selector(dayTapped:)];
+        [dayView addGestureRecognizer:tapGestureRecognizer];
 
         // Set the tag as the day view
-        // Will be used in order to reseet marks
+        // Will be used in order to reset marks
         // Each day view is easily accessible using viewWithTag
-        dayView.tag     = i;
+        dayView.tag = i;
 
         [self addSubview:dayView];
         [self.dayTiles addObject:dayView];
@@ -654,11 +663,18 @@
     }
 
     if (position != 1) {
-        int counter = 1;
-        for (int i = position; i < 8; i++) {
-            TKUCalendarDayView *dayView = [[TKUCalendarDayView alloc] initWithFrame:CGRectMake((i - 1) * 46 - 1, line * 44, 47, 45)];
-            dayView.str = [NSString stringWithFormat:@"%d", counter];
-            [dayView setActive:NO];
+        NSInteger counter = 1;
+        for (NSInteger i = position; i < 8; i++) {
+            CGFloat x = (i - 1) * 46.0 - 1;
+            CGFloat y = 0.0;
+            CGFloat width = 46.0;
+            CGFloat height = 38.0;
+            TKUCalendarDayView *dayView = [[TKUCalendarDayView alloc] initWithFrame:CGRectMake(x, y, width, height)];
+            dayView.dayText = [NSString stringWithFormat:@"%d", counter];
+            dayView.active = NO;
+
+            UITapGestureRecognizer *tapGestureRecognizer = [[UITapGestureRecognizer alloc] initWithTarget:self action:@selector(dayTapped:)];
+            [dayView addGestureRecognizer:tapGestureRecognizer];
 
             [self addSubview:dayView];
             [self.dayTiles addObject:dayView];
@@ -666,13 +682,13 @@
         }
     }
 
-    CGRect r = self.frame;
-    r.size.height = (line + 1) * 44;
-    self.frame = r;
+    CGRect frame = self.frame;
+    frame.size.height = (line + 1) * 38.0;
+    self.frame = frame;
 
-    self.lines = line;
+    self.numberOfLines = line;
     if (position == 1) {
-        self.lines--;
+        self.numberOfLines--;
     }
 }
 
@@ -680,42 +696,51 @@
 {
     for (NSInteger i = 1; i <= self.marks.count; i++) {
         TKUCalendarDayView *dayView = (TKUCalendarDayView *)[self viewWithTag:i];
-
-        [dayView setMarked:[[self.marks objectAtIndex:i - 1] boolValue]];
+        dayView.marked = [[self.marks objectAtIndex:i - 1] boolValue];
     }
+    
     [self setNeedsDisplay];
 }
 
-- (TKUCalendarDayView *)oldDayTile
+- (TKUCalendarDayView *)dequeueReusableDayView
 {
-    if ([self.graveYard count] > 0) {
-        TKUCalendarDayView *d = [self.graveYard objectAtIndex:0];
-        [self.graveYard removeObjectAtIndex:0];
-        return d;
+    if ([self.reusableDayViews count] > 0) {
+        TKUCalendarDayView *dayView = [self.reusableDayViews objectAtIndex:0];
+        [self.reusableDayViews removeObjectAtIndex:0];
+        return dayView;
     }
+    
     return nil;
 }
 
 - (void)build
 {
-    [self.graveYard addObjectsFromArray:self.dayTiles];
+    [self.reusableDayViews addObjectsFromArray:self.dayTiles];
     self.dayTiles = [[NSMutableArray alloc] init];
 
-    int position = self.weekdayOfFirst;
-    int line = 0;
+    NSInteger position = self.weekdayOfFirst;
+    NSInteger lineNumber = 0;
 
-    int daysInPreviousMonth = [self daysInPreviousMonth];
-    int daysInMonth = [self.dateOfFirst daysInMonth];
-    int lead = daysInPreviousMonth - (position - 2);
+    NSInteger daysInPreviousMonth = [self daysInPreviousMonth];
+    NSInteger daysInMonth = [self.dateOfFirst daysInMonth];
+    NSInteger lead = daysInPreviousMonth - (position - 2);
 
     TKUCalendarDayView *dayView;
 
-    for (int i = 1; i < position; i++) {
-        dayView = [self oldDayTile];
+    for (NSInteger i = 1; i < position; i++) {
+        dayView = [self dequeueReusableDayView];
         if (dayView == nil) {
             dayView = [[TKUCalendarDayView alloc] initWithFrame:CGRectZero];
+            UITapGestureRecognizer *tapGestureRecognizer = [[UITapGestureRecognizer alloc] initWithTarget:self action:@selector(dayTapped:)];
+            [dayView addGestureRecognizer:tapGestureRecognizer];
+
         }
-        dayView.frame = CGRectMake((i - 1) * 46 - 1, 0, 47, 45);
+        
+        CGFloat x = (i - 1) * 46.0 - 1.0;
+        CGFloat y = 0.0;
+        CGFloat width = 46.0;
+        CGFloat height = 38.0;
+        dayView.frame = CGRectMake(x, y, width, height);
         [dayView setString:[NSString stringWithFormat:@"%d", lead] selected:NO active:NO today:NO marked:NO];
 
         [self addSubview:dayView];
@@ -725,47 +750,61 @@
     }
 
     BOOL isCurrentMonth = NO;
-    if (self.todayNumber > 0) {
+    if (self.todaysDay > 0) {
         isCurrentMonth = YES;
     }
 
-    for (int i = 1; i <= daysInMonth; i++) {
-        dayView = [self oldDayTile];
+    for (NSInteger i = 1; i <= daysInMonth; i++) {
+        dayView = [self dequeueReusableDayView];
         if (dayView == nil) {
             dayView = [[TKUCalendarDayView alloc] initWithFrame:CGRectZero];
+            UITapGestureRecognizer *tapGestureRecognizer = [[UITapGestureRecognizer alloc] initWithTarget:self action:@selector(dayTapped:)];
+            [dayView addGestureRecognizer:tapGestureRecognizer];
+
         }
 
-        dayView.frame = CGRectMake((position - 1) * 46 - 1, line * 44, 47, 45);
+        CGFloat x = (position - 1) * 46.0 - 1.0;
+        CGFloat y = lineNumber * 38.0;
+        CGFloat width = 46.0;
+        CGFloat height = 38.0;
+        dayView.frame = CGRectMake(x, y, width, height);
 
-        BOOL today = isCurrentMonth && i == self.todayNumber ? YES : NO;
+        BOOL isToday = (isCurrentMonth && i == self.todaysDay);
 
-        [dayView setString:[NSString stringWithFormat:@"%d", i] selected:NO active:YES today:today marked:[[self.marks objectAtIndex:i - 1] boolValue]];
+        [dayView setString:[NSString stringWithFormat:@"%d", i] selected:NO active:YES today:isToday marked:[[self.marks objectAtIndex:i - 1] boolValue]];
 
         // Set the tag as the day view
         // Will be used in order to reseet marks
         // Each day view is easily accessible using viewWithTag
-        dayView.tag     = i;
+        dayView.tag = i;
 
         [self addSubview:dayView];
         [self.dayTiles addObject:dayView];
 
         if (position == 7) {
             position = 1;
-            line++;
+            lineNumber++;
         } else {
             position++;
         }
     }
 
     if (position != 1) {
-        int counter = 1;
-        for (int i = position; i < 8; i++) {
-            dayView = [self oldDayTile];
+        NSInteger counter = 1;
+        for (NSInteger i = position; i < 8; i++) {
+            dayView = [self dequeueReusableDayView];
             if (dayView == nil) {
                 dayView = [[TKUCalendarDayView alloc] initWithFrame:CGRectZero];
+                UITapGestureRecognizer *tapGestureRecognizer = [[UITapGestureRecognizer alloc] initWithTarget:self action:@selector(dayTapped:)];
+                [dayView addGestureRecognizer:tapGestureRecognizer];
+
             }
 
-            dayView.frame = CGRectMake((i - 1) * 46 - 1, line * 44, 47, 45);
+            CGFloat x = (i - 1) * 46.0 - 1.0;
+            CGFloat y = lineNumber * 38.0;
+            CGFloat width = 46.0;
+            CGFloat height = 38.0;
+            dayView.frame = CGRectMake(x, y, width, height);
             [dayView setString:[NSString stringWithFormat:@"%d", counter] selected:NO active:NO today:NO marked:NO];
 
             [self addSubview:dayView];
@@ -774,88 +813,71 @@
         }
     }
 
-    CGRect r = self.frame;
-    r.size.height = (line + 1) * 44;
-    self.frame = r;
+    CGRect frame = self.frame;
+    frame.size.height = (lineNumber + 1) * 38.0;
+    self.frame = frame;
 
-    self.lines = line;
+    self.numberOfLines = lineNumber;
     if (position == 1) {
-        self.lines--;
+        self.numberOfLines--;
     }
 }
 
 - (void)selectDay:(int)theDayNumber
 {
-    int i = 0;
-
+    NSInteger i = 0;
     while (i < [self.dayTiles count]) {
-        if ([[[self.dayTiles objectAtIndex:i] str] intValue] == 1) {
+        if ([[[self.dayTiles objectAtIndex:i] dayText] integerValue] == 1) {
             break;
         }
         i++;
     }
-    [self.selectedDay setSelected:NO];
-    self.selectedDay = [self.dayTiles objectAtIndex:i + theDayNumber - 1];
+
+    [self.selectedDayView setSelected:NO];
+    self.selectedDayView = [self.dayTiles objectAtIndex:i + theDayNumber - 1];
     [[self.dayTiles objectAtIndex:i + theDayNumber - 1] setSelected:YES];
 
-    [self bringSubviewToFront:self.selectedDay];
+    [self bringSubviewToFront:self.selectedDayView];
 }
 
-- (void)selectDayView:(UITouch *)touch
+- (void)dayTapped:(UIGestureRecognizer *)gestureRecognizer
 {
-    CGPoint p = [touch locationInView:self];
-    int index = ((int)p.y / 44) * 7 + ((int)p.x / 46);
-
-    if (index > [self.dayTiles count]) {
-        return;
-    }
-
-    TKUCalendarDayView *selected = [self.dayTiles objectAtIndex:index];
-
-    if (![selected active]) {
-        if ([selected.str intValue] > 15) {
-            [self.delegate performSelector:@selector(previousMonthDayWasSelected:) withObject:selected.str];
+    TKUCalendarDayView *selectedDayView = (TKUCalendarDayView *)gestureRecognizer.view;
+    
+    if (selectedDayView.isActive == NO) {
+        if ([selectedDayView.dayText integerValue] > 15) {
+            [self.delegate performSelector:@selector(previousMonthDayWasSelected:) withObject:selectedDayView.dayText];
         } else {
-            [self.delegate performSelector:@selector(nextMonthDayWasSelected:) withObject:selected.str];
+            [self.delegate performSelector:@selector(nextMonthDayWasSelected:) withObject:selectedDayView.dayText];
         }
+        
         return;
     }
-
-    [self.selectedDay setSelected:NO];
-    [self bringSubviewToFront:selected];
-    [selected setSelected:YES];
-    self.selectedDay = selected;
-
-    [self.delegate performSelector:@selector(dateWasSelected:) withObject:[NSArray arrayWithObjects:self, selected.str, nil]];
+    
+    self.selectedDayView.selected = NO;
+    
+    [self bringSubviewToFront:selectedDayView];
+    
+    selectedDayView.selected = YES;
+    self.selectedDayView = selectedDayView;
+    
+    [self.delegate performSelector:@selector(dateWasSelected:) withObject:[NSArray arrayWithObjects:self, selectedDayView.dayText, nil]];
 }
 
-- (void)touchesBegan:(NSSet *)touches withEvent:(UIEvent *)event
+- (void)setStartDate:(NSDate *)startDate today:(NSInteger)todayDay marks:(NSArray *)marksArray
 {
-    [super touchesBegan:touches withEvent:event];
-
-    [self selectDayView:[touches anyObject]];
-}
-
-- (void)touchesMoved:(NSSet *)touches withEvent:(UIEvent *)event
-{
-    [super touchesMoved:(NSSet *)touches withEvent:(UIEvent *)event];
-    [self selectDayView:[touches anyObject]];
-}
-
-- (void)setStartDate:(NSDate *)theDate today:(NSInteger)todayDay marks:(NSArray *)marksArray
-{
-    TKUDateInformation info = [theDate dateInformation];
-    info.day  = 1;
-    self.dateOfFirst = [NSDate dateFromDateInformation:info];
+    TKUDateInformation startDateInformation = [startDate dateInformation];
+    startDateInformation.day  = 1;
+    self.dateOfFirst = [NSDate dateFromDateInformation:startDateInformation];
 
     // Calendar starting on Monday instead of Sunday (Australia, Europe against US american calendar)
     self.weekdayOfFirst = [self.dateOfFirst weekdayWithMondayFirst];
-    self.todayNumber = todayDay;
+    self.todaysDay = todayDay;
     self.marks = marksArray;
 
     if (self.dayTiles == nil) {
         self.dayTiles = [[NSMutableArray alloc] init];
-        self.graveYard = [[NSMutableArray alloc] init];
+        self.reusableDayViews = [[NSMutableArray alloc] init];
     }
 
     [self build];
@@ -865,116 +887,119 @@
 
 @implementation TKUCalendarDayView
 
-@synthesize selected, active, today, marked, str;
-
-- (id)initWithFrame:(CGRect)frame string:(NSString *)string selected:(BOOL)sel active:(BOOL)act today:(BOOL)tdy marked:(BOOL)mark
+- (id)initWithFrame:(CGRect)frame string:(NSString *)string selected:(BOOL)selected active:(BOOL)active today:(BOOL)today marked:(BOOL)marked
 {
-    if (self = [super initWithFrame:frame]) {
-        [self setString:(NSString *)string selected:(BOOL)sel active:(BOOL)act today:(BOOL)tdy marked:(BOOL)mark];
+    self = [super initWithFrame:frame];
+    if (self == nil) {
+        return nil;
     }
+    
+    [self setString:string selected:selected active:active today:today marked:marked];
+    
     return self;
 }
 
-- (void)setString:(NSString *)string selected:(BOOL)sel active:(BOOL)act today:(BOOL)tdy marked:(BOOL)mark
+- (void)setString:(NSString *)dayText selected:(BOOL)selected active:(BOOL)active today:(BOOL)today marked:(BOOL)mark
 {
-    str = [string copy];
-    selected = sel;
-    active = act;
-    today = tdy;
-    marked = mark;
+    self.dayText = dayText;
+    self.selected = selected;
+    self.active = active;
+    self.today = today;
+    self.marked = mark;
+    
     [self setNeedsDisplay];
 }
 
 - (id)initWithFrame:(CGRect)frame
 {
-    if (self = [super initWithFrame:frame]) {
-        active = YES;
-        today = NO;
-        marked = NO;
-        selected = NO;
-        self.opaque = YES;
+    self = [super initWithFrame:frame];
+    if (self == nil) {
+        return nil;
     }
+
+    self.active = YES;
+    self.today = NO;
+    self.marked = NO;
+    self.selected = NO;
+    self.opaque = YES;
+
     return self;
 }
 
 - (void)drawRect:(CGRect)rect
 {
-    // Drawing code
+    CGContextRef context = UIGraphicsGetCurrentContext();
+    CGContextSetRGBFillColor(context, 251.0/255.0, 251.0/255.0, 251.0/255.0, 1.0);
+    CGContextFillRect(context, rect);
 
-    UIImage *d;
-    UIColor *color;
+    UIImage *dateCellImage = nil;
+    UIColor *textColor = [UIColor whiteColor];
 
-    if (!active) {
-        // color = [UIColor colorWithRed:36.0/255.0 green:49/255.0 blue:64/255.0 alpha:1];
-        color = [UIColor grayColor];
-        d = [UIImage imageNamed:@"datecell"];
-    } else if (today && selected) {
-        color = [UIColor whiteColor];
-        d = [UIImage imageNamed:@"todayselected"];
-    } else if (today) {
-        color = [UIColor whiteColor];
-        d = [UIImage imageNamed:@"today"];
-    } else if (selected) {
-        color = [UIColor whiteColor];
-        d = [UIImage imageNamed:@"datecellselected"];
+    if (self.isActive == NO) {
+        textColor = [UIColor colorWithRed:204.0 / 255.0 green:204.0 / 255.0 blue:204.0 / 255.0 alpha:1.0];
+    } else if (self.isToday && self.isSelected) {
+        dateCellImage = [UIImage imageNamed:@"todayselected"];
+    } else if (self.isToday) {
+        textColor = [UIColor colorWithRed:82.0 / 255.0 green:82.0 / 255.0 blue:82.0 / 255.0 alpha:1.0];
+        dateCellImage = [UIImage imageNamed:@"today"];
+    } else if (self.isSelected) {
+        dateCellImage = [UIImage imageNamed:@"datecellselected"];
     } else {
-        color = [UIColor colorWithRed:75.0 / 255.0 green:92 / 255.0 blue:111 / 255.0 alpha:1];
-        d = [UIImage imageNamed:@"datecell"];
+        textColor = [UIColor colorWithRed:82.0 / 255.0 green:82.0 / 255.0 blue:82.0 / 255.0 alpha:1.0];
     }
 
-    [d drawAtPoint:CGPointMake(0, 0)];
-
-    [color set];
-
-    [str drawInRect:CGRectInset(self.bounds, 4, 9)
-           withFont:[UIFont boldSystemFontOfSize:22]
-      lineBreakMode:NSLineBreakByWordWrapping
-          alignment:NSTextAlignmentCenter];
-
-    if (marked) {
-        CGContextRef context = UIGraphicsGetCurrentContext();
-        if (selected || today) {
-            CGContextSetRGBFillColor(context, 1, 1, 1, 1.0);
-        } else {
-            CGContextSetRGBFillColor(context, 75.0 / 255.0, 92 / 255.0, 111 / 255.0, 1.0);
-        }
-
-        CGContextSetLineWidth(context, 0.0);
-        CGContextAddEllipseInRect(context, CGRectMake(self.frame.size.width / 2 - 2, 45 - 10, 4, 4));
-        CGContextFillPath(context);
+    CGFloat width = self.bounds.size.width;
+    CGFloat height = self.bounds.size.height;
+    
+    if (dateCellImage != nil) {
+        CGFloat imageX = ((width - dateCellImage.size.width) / 2);
+        CGFloat imageY = ((height - dateCellImage.size.height) / 2);
+        [dateCellImage drawAtPoint:CGPointMake(imageX, imageY)];
     }
+
+    [textColor set];
+
+    UIFont *font = [UIFont systemFontOfSize:18.0];
+    CGSize size = [self.dayText sizeWithFont:font];
+    CGFloat x = ((width - size.width) / 2);
+    CGFloat y = ((height - size.height) / 2);
+    
+    [self.dayText drawAtPoint:CGPointMake(x, y) forWidth:size.width withFont:font lineBreakMode:NSLineBreakByWordWrapping];
 }
 
-- (void)setSelected:(BOOL)select
+- (void)setSelected:(BOOL)selected
 {
-    selected = select;
+    _selected = selected;
     [self setNeedsDisplay];
 }
 
-- (void)setToday:(BOOL)tdy
+- (void)setToday:(BOOL)today
 {
-    if (tdy == today) {
+    if (today == _today) {
         return;
     }
-    today = !today;
+    
+    _today = !_today;
     [self setNeedsDisplay];
 }
 
-- (void)setActive:(BOOL)act
+- (void)setActive:(BOOL)active
 {
-    if (active == act) {
+    if (_active == active) {
         return;
     }
-    active = act;
+    
+    _active = active;
     [self setNeedsDisplay];
 }
 
-- (void)setMarked:(BOOL)mark
+- (void)setMarked:(BOOL)marked
 {
-    if (marked == mark) {
+    if (_marked == marked) {
         return;
     }
-    marked = !marked;
+    
+    _marked = !_marked;
     [self setNeedsDisplay];
 }
 

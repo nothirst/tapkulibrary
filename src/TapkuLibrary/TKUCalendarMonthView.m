@@ -106,7 +106,23 @@
 
     TKUMonthGridView *currentMonthGridView = [[TKUMonthGridView alloc] initWithStartDate:self.currentMonthDate today:[[NSDate date] dateInformation].day marks:marks];
     [currentMonthGridView setDelegate:self];
-
+    
+    UISwipeGestureRecognizer *leftToRightSwipeGestureRecognizer = [[UISwipeGestureRecognizer alloc] initWithTarget:self action:@selector(swipedToRecedeMonth:)];
+    leftToRightSwipeGestureRecognizer.direction = UISwipeGestureRecognizerDirectionRight;
+    [currentMonthGridView addGestureRecognizer:leftToRightSwipeGestureRecognizer];
+    
+    UISwipeGestureRecognizer *upToDownSwipeGestureRecognizer = [[UISwipeGestureRecognizer alloc] initWithTarget:self action:@selector(swipedToRecedeMonth:)];
+    upToDownSwipeGestureRecognizer.direction = UISwipeGestureRecognizerDirectionDown;
+    [currentMonthGridView addGestureRecognizer:upToDownSwipeGestureRecognizer];
+    
+    UISwipeGestureRecognizer *rightToLeftSwipeGestureRecognizer = [[UISwipeGestureRecognizer alloc] initWithTarget:self action:@selector(swipedToAdvanceMonth:)];
+    rightToLeftSwipeGestureRecognizer.direction = UISwipeGestureRecognizerDirectionLeft;
+    [currentMonthGridView addGestureRecognizer:rightToLeftSwipeGestureRecognizer];
+    
+    UISwipeGestureRecognizer *downToUpSwipeGestureRecognizer = [[UISwipeGestureRecognizer alloc] initWithTarget:self action:@selector(swipedToAdvanceMonth:)];
+    downToUpSwipeGestureRecognizer.direction = UISwipeGestureRecognizerDirectionUp;
+    [currentMonthGridView addGestureRecognizer:downToUpSwipeGestureRecognizer];
+    
     CGRect scrollViewFrame = self.scrollView.frame;
     scrollViewFrame.size.height = (currentMonthGridView.numberOfLines + 1) * 38.0;
     self.scrollView.frame = scrollViewFrame;
@@ -114,8 +130,7 @@
     self.frame = CGRectMake(self.frame.origin.x, self.frame.origin.y, self.scrollView.frame.size.width, self.scrollView.frame.size.height + [[UIImage imageNamed:@"topbar"] size].height + self.shadowImageView.frame.size.height);
 
     CGRect shadowFrame = self.shadowImageView.frame;
-    shadowFrame.origin.y = scrollViewFrame.origin.y + scrollViewFrame.size.height;// + shadowFrame.size.height;
-//    shadowFrame.origin.y = self.frame.size.height - shadowFrame.size.height;
+    shadowFrame.origin.y = scrollViewFrame.origin.y + scrollViewFrame.size.height;
     self.shadowImageView.frame = shadowFrame;
 
     UIView *nextMonthView = [[UIView alloc] initWithFrame:CGRectMake(0.0, currentMonthGridView.numberOfLines * 38.0, 320.0, 20.0)];
@@ -190,6 +205,22 @@
         [(TKUMonthGridView *)monthGridView setStartDate:newDate today:todayNumber marks:marksForSelectedMonth];
     } else {
         monthGridView = [[TKUMonthGridView alloc] initWithStartDate:newDate today:todayNumber marks:marksForSelectedMonth];
+
+        UISwipeGestureRecognizer *leftToRightSwipeGestureRecognizer = [[UISwipeGestureRecognizer alloc] initWithTarget:self action:@selector(swipedToRecedeMonth:)];
+        leftToRightSwipeGestureRecognizer.direction = UISwipeGestureRecognizerDirectionRight;
+        [(TKUMonthGridView *)monthGridView addGestureRecognizer:leftToRightSwipeGestureRecognizer];
+        
+        UISwipeGestureRecognizer *upToDownSwipeGestureRecognizer = [[UISwipeGestureRecognizer alloc] initWithTarget:self action:@selector(swipedToRecedeMonth:)];
+        upToDownSwipeGestureRecognizer.direction = UISwipeGestureRecognizerDirectionDown;
+        [(TKUMonthGridView *)monthGridView addGestureRecognizer:upToDownSwipeGestureRecognizer];
+        
+        UISwipeGestureRecognizer *rightToLeftSwipeGestureRecognizer = [[UISwipeGestureRecognizer alloc] initWithTarget:self action:@selector(swipedToAdvanceMonth:)];
+        rightToLeftSwipeGestureRecognizer.direction = UISwipeGestureRecognizerDirectionLeft;
+        [(TKUMonthGridView *)monthGridView addGestureRecognizer:rightToLeftSwipeGestureRecognizer];
+        
+        UISwipeGestureRecognizer *downToUpSwipeGestureRecognizer = [[UISwipeGestureRecognizer alloc] initWithTarget:self action:@selector(swipedToAdvanceMonth:)];
+        downToUpSwipeGestureRecognizer.direction = UISwipeGestureRecognizerDirectionUp;
+        [(TKUMonthGridView *)monthGridView addGestureRecognizer:downToUpSwipeGestureRecognizer];
     }
 
     [(TKUMonthGridView *)monthGridView setDelegate:self];
@@ -263,7 +294,7 @@
     self.scrollView.frame = monthGridViewFrame;
 
     CGRect shadowImageViewFrame = self.shadowImageView.frame;
-    shadowImageViewFrame.origin.y = monthGridViewFrame.origin.y + monthGridViewFrame.size.height;// + shadowImageViewFrame.size.height;
+    shadowImageViewFrame.origin.y = monthGridViewFrame.origin.y + monthGridViewFrame.size.height;
     self.shadowImageView.frame = shadowImageViewFrame;
 
     currentMonthGridView.alpha = 0;
@@ -330,7 +361,7 @@
     self.scrollView.frame = scrollViewFrame;
 
     CGRect shadowImageViewFrame = self.shadowImageView.frame;
-    shadowImageViewFrame.origin.y = scrollViewFrame.origin.y + scrollViewFrame.size.height;// + shadowImageViewFrame.size.height;
+    shadowImageViewFrame.origin.y = scrollViewFrame.origin.y + scrollViewFrame.size.height;
     self.shadowImageView.frame = shadowImageViewFrame;
 
     self.frame = CGRectMake(self.frame.origin.x, self.frame.origin.y, self.scrollView.frame.size.width, self.scrollView.frame.size.height + [[UIImage imageNamed:@"topbar"] size].height + self.shadowImageView.frame.size.height);
@@ -490,6 +521,18 @@
 }
 
 - (void)rightButtonTapped
+{
+    [self moveCalendarMonthsUpAnimated:YES];
+    [self selectDayInMonth];
+}
+
+- (void)swipedToRecedeMonth:(UIGestureRecognizer *)gestureRecognizer
+{
+    [self moveCalendarMonthsDownAnimated:YES];
+    [self selectDayInMonth];
+}
+
+- (void)swipedToAdvanceMonth:(UIGestureRecognizer *)gestureRecognizer
 {
     [self moveCalendarMonthsUpAnimated:YES];
     [self selectDayInMonth];
